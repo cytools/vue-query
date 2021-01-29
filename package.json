@@ -1,57 +1,54 @@
 {
-  "name": "vue-query",
-  "version": "0.0.1",
-  "description": "",
-  "main": "src/index.ts",
-  "dependencies": {
-    "vue-demi": "^0.6.0"
-  },
-  "devDependencies": {
-    "@types/jest": "^26.0.20",
-    "@typescript-eslint/eslint-plugin": "^4.14.1",
-    "@typescript-eslint/parser": "^4.14.1",
-    "esbuild": "^0.8.36",
-    "eslint": "^7.18.0",
-    "eslint-config-prettier": "^7.2.0",
-    "eslint-config-react-app": "^6.0.0",
-    "eslint-config-standard": "^16.0.2",
-    "eslint-config-standard-react": "^11.0.1",
-    "eslint-plugin-flowtype": "^5.2.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^5.0.0",
-    "eslint-plugin-vue": "^7.5.0",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.4.4",
-    "typescript": "^4.1.3"
-  },
-  "peerDependencies": {
-    "@vue/composition-api": "^1.0.0-rc.1",
-    "vue": "^2.6.12"
-  },
-  "scripts": {
-    "test": "jest",
-    "build": "esbuild ./src/index.ts --bundle --minify --define:process.env.NODE_ENV='production' --outfile=./dist/index.js "
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/KaloyanYosifov/vue-query.git"
-  },
-  "keywords": [
-    "vue",
-    "query",
-    "vue-query",
-    "vue-composition",
-    "composition",
-    "vue3"
-  ],
-  "author": "KaloyanYosifov",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/KaloyanYosifov/vue-query/issues"
-  },
-  "homepage": "https://github.com/KaloyanYosifov/vue-query#readme"
+    "name": "vue-query",
+    "version": "0.0.1",
+    "description": "",
+    "main": "src/index.ts",
+    "dependencies": {},
+    "devDependencies": {
+        "@types/jest": "^26.0.20",
+        "@typescript-eslint/eslint-plugin": "^4.14.1",
+        "@typescript-eslint/parser": "^4.14.1",
+        "esbuild": "^0.8.36",
+        "eslint": "^7.18.0",
+        "eslint-config-prettier": "^7.2.0",
+        "eslint-config-react-app": "^6.0.0",
+        "eslint-config-standard": "^16.0.2",
+        "eslint-config-standard-react": "^11.0.1",
+        "eslint-import-resolver-typescript": "^2.3.0",
+        "eslint-plugin-flowtype": "^5.2.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-jsx-a11y": "^6.4.1",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-prettier": "^3.3.1",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-standard": "^5.0.0",
+        "eslint-plugin-vue": "^7.5.0",
+        "jest": "^26.6.3",
+        "ts-jest": "^26.4.4",
+        "typescript": "^4.1.3",
+        "vue": "^3.0.*",
+        "vue-demi": "^0.6.0"
+    },
+    "scripts": {
+        "test": "jest",
+        "build": "esbuild ./src/index.ts --bundle --minify --define:process.env.NODE_ENV='production' --outfile=./dist/index.js "
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KaloyanYosifov/vue-query.git"
+    },
+    "keywords": [
+        "vue",
+        "query",
+        "vue-query",
+        "vue-composition",
+        "composition",
+        "vue3"
+    ],
+    "author": "KaloyanYosifov",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/KaloyanYosifov/vue-query/issues"
+    },
+    "homepage": "https://github.com/KaloyanYosifov/vue-query#readme"
 }

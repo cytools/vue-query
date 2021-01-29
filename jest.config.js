@@ -1,11 +1,14 @@
 module.exports = {
-    "verbose": true,
-    "moduleFileExtensions": [
-      "ts",
-      "js"
+    'verbose': true,
+    'moduleFileExtensions': [
+        'ts',
+        'js',
     ],
-    "testMatch": [
-      "<rootDir>/tests/**/*.spec.{js,ts}"
+    'testMatch': [
+        '<rootDir>/tests/**/*.spec.{js,ts}',
     ],
-    "preset": "ts-jest"
-}
+    'moduleNameMapper': {
+        '^@/(.*?)$': '<rootDir>/src/$1',
+    },
+    'preset': 'ts-jest',
+};

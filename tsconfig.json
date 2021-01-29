@@ -16,7 +16,13 @@
     "importHelpers": true,
     "stripInternal": true,
     "downlevelIteration": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
   },
   "include": ["src"]
 }

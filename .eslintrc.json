@@ -30,5 +30,10 @@
     "import/no-unresolved": "error",
     "import/no-unused-modules": ["off", { "unusedExports": true }],
     "no-redeclare": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
   }
 }
