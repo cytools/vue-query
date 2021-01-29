@@ -3,9 +3,12 @@
     "version": "0.0.1",
     "description": "",
     "main": "src/index.ts",
-    "dependencies": {},
+    "dependencies": {
+        "lodash": "^4.17.20"
+    },
     "devDependencies": {
         "@types/jest": "^26.0.20",
+        "@types/lodash": "^4.14.168",
         "@typescript-eslint/eslint-plugin": "^4.14.1",
         "@typescript-eslint/parser": "^4.14.1",
         "esbuild": "^0.8.36",
