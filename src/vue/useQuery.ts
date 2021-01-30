@@ -70,7 +70,7 @@ export default function useQuery<T>(
     }
 
     return {
-        refetc,
+        refetch,
         data: computed(() => query.value.data),
         error: computed(() => query.value.error),
         isIdle: computed(() => query.value.status === QueryNetworkStatus.IDLE),
