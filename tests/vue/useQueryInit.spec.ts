@@ -38,11 +38,9 @@ describe('useQueryInit', () => {
             error: null,
             status: QueryNetworkStatus.SUCCESS,
         };
-
         cache.value['some-query'] = queryData;
 
         const { getQuery } = useQueryInit<any>(cache);
-
         const someQuery = getQuery('some-query').value;
 
         expect(someQuery).toEqual(queryData);
@@ -63,7 +61,6 @@ describe('useQueryInit', () => {
         expect(cache.value['some-query']).toBeUndefined();
 
         const { updateQuery } = useQueryInit<any>(cache);
-
         const dataToUpdateQueryWith = {
             data: 'testing',
             error: null,
@@ -83,6 +80,23 @@ describe('useQueryInit', () => {
             ...defaultQueryOptions,
             data: ['test2'],
         });
+    });
+
+    it('can reset query', () => {
+        const queryData = {
+            data: ['anything'],
+            error: null,
+            status: QueryNetworkStatus.SUCCESS,
+        };
+        cache.value['some-query'] = queryData;
+
+        const { getQuery, resetQuery } = useQueryInit<any>(cache);
+
+        expect(getQuery('some-query').value).toEqual(queryData);
+
+        resetQuery('some-query');
+
+        expect(getQuery('some-query').value).toEqual(defaultQueryOptions);
     });
 
     it('can remove query from cache', () => {

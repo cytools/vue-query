@@ -98,7 +98,7 @@ export default function useQueryInit<T>(cache: QueryCache) {
 
         return Object.prototype.hasOwnProperty.call(cache.value, key);
     };
-    const clearQuery = (key: string) => {
+    const resetQuery = (key: string) => {
         key = convertToStringKey(key);
 
         return updateQuery(key, { ...getDefaultQuery().value });
@@ -107,7 +107,7 @@ export default function useQueryInit<T>(cache: QueryCache) {
     return {
         addQuery,
         getQuery,
-        clearQuery,
+        resetQuery,
         queryExists,
         updateQuery,
         removeQuery,
