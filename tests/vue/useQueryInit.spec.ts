@@ -33,20 +33,19 @@ describe('useQueryInit', () => {
     });
 
     it('returns the state of the old query if the key is in cache', () => {
-        cache.value['some-query'] = {
+        const queryData = {
             data: ['anything'],
             error: null,
             status: QueryNetworkStatus.SUCCESS,
         };
+
+        cache.value['some-query'] = queryData;
+
         const { getQuery } = useQueryInit<any>(cache);
 
         const someQuery = getQuery('some-query').value;
 
-        expect(someQuery).toEqual({
-            data: ['anything'],
-            error: null,
-            status: QueryNetworkStatus.SUCCESS,
-        });
+        expect(someQuery).toEqual(queryData);
     });
 
     it('can set initial defaults when adding a query', () => {
@@ -84,5 +83,15 @@ describe('useQueryInit', () => {
             ...defaultQueryOptions,
             data: ['test2'],
         });
+    });
+
+    it('can remove query from cache', () => {
+        cache.value['some-query'] = defaultQueryOptions;
+
+        const { removeQuery } = useQueryInit<any>(cache);
+
+        removeQuery('some-query');
+
+        expect(cache.value['some-query']).toBeUndefined();
     });
 });
