@@ -32,6 +32,10 @@
         "@typescript-eslint/no-shadow": [
             "error"
         ],
+        "semi": [
+            "error",
+            "always"
+        ],
         "import/no-cycle": "error",
         "import/no-unresolved": "error",
         "import/no-unused-modules": [

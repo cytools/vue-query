@@ -33,8 +33,8 @@
         "vue-demi": "^0.6.0"
     },
     "scripts": {
-        "test": "jest",
-        "fix-style": "eslint ./src --ext .ts --fix",
+        "test": "jest --maxWorkers=4",
+        "fix-style": "eslint --fix ./src",
         "build": "esbuild ./src/index.ts --bundle --minify --define:process.env.NODE_ENV='production' --outfile=./dist/index.js "
     },
     "repository": {

@@ -59,4 +59,30 @@ describe('useQueryInit', () => {
             data: ['test'],
         });
     });
+
+    it('automatically adds a query to the cache when we update a query that doesn\'t exist yet', () => {
+        expect(cache.value['some-query']).toBeUndefined();
+
+        const { updateQuery } = useQueryInit<any>(cache);
+
+        const dataToUpdateQueryWith = {
+            data: 'testing',
+            error: null,
+            status: QueryNetworkStatus.LOADING,
+        };
+        updateQuery('some-query', dataToUpdateQueryWith);
+
+        expect(cache.value['some-query']).toEqual(dataToUpdateQueryWith);
+    });
+
+    it('can update query data', () => {
+        const { updateQueryData, getQuery } = useQueryInit<any>(cache);
+
+        updateQueryData('some-query', () => (['test2']));
+
+        expect(getQuery('some-query').value).toEqual({
+            ...defaultQueryOptions,
+            data: ['test2'],
+        });
+    });
 });
