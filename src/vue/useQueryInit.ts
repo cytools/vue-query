@@ -24,32 +24,32 @@ const convertToStringKey = (key: string | string[]) => {
 
     return key;
 };
+const cloneQueryData = (data: any) => {
+    if (Array.isArray(data)) {
+        data = data.map(singleData => cloneQueryData(singleData));
+    } else if (isObject(data)) {
+        data = Object.keys(data)
+            .reduce((object: { [key: string]: any }, key) => {
+                object[key] = cloneQueryData(data[key]);
+
+                return object;
+            }, {});
+    }
+
+    return data;
+};
 export default function useQueryInit<T>(cache: QueryCache) {
-    const cloneQueryData = (data: any) => {
-        if (Array.isArray(data)) {
-            data = data.map(singleData => cloneQueryData(singleData));
-        } else if (isObject(data)) {
-            data = Object.keys(data)
-                .reduce((object: { [key: string]: any }, key) => {
-                    object[key] = cloneQueryData(data[key]);
-
-                    return object;
-                }, {});
-        }
-
-        return data;
-    };
     const getDefaultQuery = () => {
         return computed<Query<T>>(() => defaultQueryOptions);
     };
-    const addQuery = (key: string, initialData: Partial<Query<T>> | null = null) => {
+    const addQuery = (key: string, initialData: Partial<Query<T>> = {}) => {
         key = convertToStringKey(key);
 
         if (queryExists(key)) {
             return getQuery(key);
         }
 
-        initialData = defaults(initialData || {}, { ...getDefaultQuery().value });
+        initialData = defaults(initialData, { ...getDefaultQuery().value });
 
         cache.value = {
             ...cache.value,
