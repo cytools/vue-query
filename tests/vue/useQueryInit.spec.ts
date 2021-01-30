@@ -6,7 +6,7 @@ import { ref } from 'vue-demi';
 /**
  * Internal dependencies.
  */
-import useQueryInit from '@/vue/useQueryInit';
+import useQueryInit, { defaultQueryOptions } from '@/vue/useQueryInit';
 import { QueryCache } from '@/types/Query';
 import { QueryNetworkStatus } from '@/enums/QueryStatus';
 
@@ -23,11 +23,13 @@ describe('useQueryInit', () => {
 
         const someQuery = cache.value['some-query'];
 
-        expect(someQuery).toEqual({
-            data: null,
-            error: null,
-            status: QueryNetworkStatus.IDLE,
-        });
+        expect(someQuery).toEqual(defaultQueryOptions);
+    });
+
+    it('returns the default options for query if the query does not exist', () => {
+        const { getQuery } = useQueryInit<any>(cache);
+
+        expect(getQuery('random').value).toEqual(defaultQueryOptions);
     });
 
     it('returns the state of the old query if the key is in cache', () => {
@@ -47,15 +49,14 @@ describe('useQueryInit', () => {
         });
     });
 
-    it('can set inital defaults when adding a query', () => {
+    it('can set initial defaults when adding a query', () => {
         const { addQuery, getQuery } = useQueryInit<any>(cache);
 
         addQuery('some-query', { data: ['test'] });
 
         expect(getQuery('some-query').value).toEqual({
+            ...defaultQueryOptions,
             data: ['test'],
-            error: null,
-            status: QueryNetworkStatus.IDLE,
         });
     });
 });

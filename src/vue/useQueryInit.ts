@@ -11,6 +11,12 @@ import { Query } from '@/interfaces/Query';
 import { QueryCache } from '@/types/Query';
 import { QueryNetworkStatus } from '@/enums/QueryStatus';
 
+export const defaultQueryOptions = {
+    data: null,
+    error: null,
+    status: QueryNetworkStatus.IDLE,
+} as const;
+
 const convertToStringKey = (key: string | string[]) => {
     if (Array.isArray(key)) {
         return JSON.stringify(key);
@@ -34,11 +40,7 @@ export default function useQueryInit<T>(cache: QueryCache) {
         return data;
     };
     const getDefaultQuery = () => {
-        return computed<Query<T>>(() => ({
-            data: null,
-            error: null,
-            status: QueryNetworkStatus.IDLE,
-        }));
+        return computed<Query<T>>(() => defaultQueryOptions);
     };
     const addQuery = (key: string, initialData: Partial<Query<T>> | null = null) => {
         key = convertToStringKey(key);
