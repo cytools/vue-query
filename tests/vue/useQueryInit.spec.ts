@@ -6,9 +6,9 @@ import { ref } from 'vue-demi';
 /**
  * Internal dependencies.
  */
-import useQueryInit, { defaultQueryOptions } from '@/vue/useQueryInit';
 import { QueryCache } from '@/types/Query';
 import { QueryNetworkStatus } from '@/enums/QueryStatus';
+import useQueryInit, { defaultQueryOptions } from '@/vue/useQueryInit';
 
 const cache: QueryCache = ref({});
 describe('useQueryInit', () => {
