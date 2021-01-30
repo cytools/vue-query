@@ -1,13 +1,17 @@
 /**
+ * External dependencies.
+ */
+import { ref } from 'vue-demi';
+
+/**
  * Internal dependencies.
  */
+import useQueryInit from '@/vue/useQueryInit';
+import { QueryCache } from '@/types/Query';
 
-export default function useQueryClient() {
-    const addQuery = () => {
-        //silence is golden
-    };
-
+const cache: QueryCache = ref({});
+export default function useQueryClient<T = any>() {
     return {
-        addQuery,
+        ...useQueryInit<T>(cache),
     };
 }

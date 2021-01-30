@@ -56,9 +56,9 @@ export default function useQueryInit<T>(cache: QueryCache) {
             [key]: initialData as Query<T>,
         };
 
-        return computed(() => cache.value[key]);
+        return getQuery(key);
     };
-    const updateQuery = (key: string, queryData: Query<T>) => {
+    const updateQuery = (key: string, queryData: Partial<Query<T>>) => {
         key = convertToStringKey(key);
 
         if (!queryExists(key)) {
@@ -70,7 +70,7 @@ export default function useQueryInit<T>(cache: QueryCache) {
 
         cache.value = {
             ...cache.value,
-            [key]: { ...queryData },
+            [key]: { ...queryData as Query<T> },
         };
 
         return getQuery(key);
