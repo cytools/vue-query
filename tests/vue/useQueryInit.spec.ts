@@ -46,4 +46,16 @@ describe('useQueryInit', () => {
             status: QueryNetworkStatus.SUCCESS,
         });
     });
+
+    it('can set inital defaults when adding a query', () => {
+        const { addQuery, getQuery } = useQueryInit<any>(cache);
+
+        addQuery('some-query', { data: ['test'] });
+
+        expect(getQuery('some-query').value).toEqual({
+            data: ['test'],
+            error: null,
+            status: QueryNetworkStatus.IDLE,
+        });
+    });
 });

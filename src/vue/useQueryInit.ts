@@ -40,14 +40,14 @@ export default function useQueryInit<T>(cache: QueryCache) {
             status: QueryNetworkStatus.IDLE,
         }));
     };
-    const addQuery = (key: string, initialData: Query<T> | object = {}) => {
+    const addQuery = (key: string, initialData: Partial<Query<T>> | null = null) => {
         key = convertToStringKey(key);
 
         if (queryExists(key)) {
             return getQuery(key);
         }
 
-        initialData = defaults(initialData, { ...getDefaultQuery().value });
+        initialData = defaults(initialData || {}, { ...getDefaultQuery().value });
 
         cache.value = {
             ...cache.value,
