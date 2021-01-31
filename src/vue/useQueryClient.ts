@@ -10,11 +10,11 @@ import useQueryInit from '@/vue/useQueryInit';
 import { QueryCache } from '@/types/Query';
 
 const cache: QueryCache = ref({});
-export default function useQueryClient<T = any>() {
+export default function useQueryClient<TData = any>() {
     const resetCache = () => cache.value = {};
 
     return {
         resetCache,
-        ...useQueryInit<T>(cache),
+        ...useQueryInit<TData>(cache),
     };
 }

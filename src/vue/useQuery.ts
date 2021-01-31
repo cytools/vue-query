@@ -9,25 +9,25 @@ import { computed } from 'vue-demi';
 import useQueryClient from '@/vue/useQueryClient';
 import { QueryNetworkStatus } from '@/enums/QueryStatus';
 
-export type QueryCallback<T> = () => Promise<T>;
-export type QueryOptions<T> = {
+export type QueryCallback<TData> = () => Promise<TData>;
+export type QueryOptions<TData> = {
     onError: (error: any) => void;
-    onSuccess: (data: T) => void;
-    onDataReceive: (data: T) => void;
-    defaultData: T | null;
+    onSuccess: (data: TData) => void;
+    onDataReceive: (data: TData) => void;
+    defaultData: TData | null;
 };
 
-export default function useQuery<T>(
+export default function useQuery<TData>(
     key: string,
-    callback: QueryCallback<T> | null = null,
+    callback: QueryCallback<TData> | null = null,
     {
         onError = () => {},
         onSuccess = () => {},
         onDataReceive = () => {},
         defaultData = null,
-    }: Partial<QueryOptions<T>> = {},
+    }: Partial<QueryOptions<TData>> = {},
 ) {
-    const { addQuery, updateQuery, updateQueryData } = useQueryClient<T>();
+    const { addQuery, updateQuery, updateQueryData } = useQueryClient<TData>();
     const query = addQuery(key, { data: defaultData });
 
     const refetch = async () => {
@@ -78,6 +78,6 @@ export default function useQuery<T>(
         isError: computed(() => query.value.status === QueryNetworkStatus.ERROR),
         isLoading: computed(() => query.value.status === QueryNetworkStatus.LOADING),
         isSuccess: computed(() => query.value.status === QueryNetworkStatus.SUCCESS),
-        updateQueryData: (updateQueryDataCB: (data: T) => T) => updateQueryData(key, updateQueryDataCB),
+        updateQueryData: (updateQueryDataCB: (data: TData) => TData) => updateQueryData(key, updateQueryDataCB),
     };
 }

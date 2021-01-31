@@ -3,8 +3,8 @@
  */
 import { QueryNetworkStatus } from '@/enums/QueryStatus';
 
-export interface Query<T> {
-    data: T | null,
+export interface Query<TData> {
+    data: TData | null,
     error: any,
     status: QueryNetworkStatus,
 }

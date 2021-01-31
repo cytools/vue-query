@@ -38,11 +38,11 @@ const cloneQueryData = (data: any) => {
 
     return data;
 };
-export default function useQueryInit<T>(cache: QueryCache) {
+export default function useQueryInit<TData>(cache: QueryCache) {
     const getDefaultQuery = () => {
-        return computed<Query<T>>(() => defaultQueryOptions);
+        return computed<Query<TData>>(() => defaultQueryOptions);
     };
-    const addQuery = (key: string, initialData: Partial<Query<T>> = {}) => {
+    const addQuery = (key: string, initialData: Partial<Query<TData>> = {}) => {
         key = convertToStringKey(key);
 
         if (queryExists(key)) {
@@ -53,12 +53,12 @@ export default function useQueryInit<T>(cache: QueryCache) {
 
         cache.value = {
             ...cache.value,
-            [key]: initialData as Query<T>,
+            [key]: initialData as Query<TData>,
         };
 
         return getQuery(key);
     };
-    const updateQuery = (key: string, queryData: Partial<Query<T>>) => {
+    const updateQuery = (key: string, queryData: Partial<Query<TData>>) => {
         key = convertToStringKey(key);
 
         if (!queryExists(key)) {
@@ -70,12 +70,12 @@ export default function useQueryInit<T>(cache: QueryCache) {
 
         cache.value = {
             ...cache.value,
-            [key]: { ...queryData as Query<T> },
+            [key]: { ...queryData as Query<TData> },
         };
 
         return getQuery(key);
     };
-    const updateQueryData = (key: string, callback: (data: T) => T) => {
+    const updateQueryData = (key: string, callback: (data: TData) => TData) => {
         const query = getQuery(key);
 
         updateQuery(key, {
