@@ -23,6 +23,40 @@ describe('useQuery', () => {
         expect(jestMockFn).toHaveBeenCalled();
     });
 
+    it('uses the cache instead of calling the callback function', async () => {
+        const dataToReturn = ['some-data'];
+        useQuery('some-query', async () => dataToReturn);
+
+        await startTimeout(0);
+
+        const jestMockFn = jest.fn();
+        const callback = async () => jestMockFn();
+        const { data } = useQuery('some-query', callback);
+
+        await startTimeout(0);
+
+        expect(data.value).toEqual(dataToReturn);
+        expect(jestMockFn).not.toHaveBeenCalled();
+    });
+
+    it('can refetch the data', async () => {
+        useQuery('some-query', async () => ['test']);
+
+        await startTimeout(0);
+
+        const jestMockFn = jest.fn();
+        const callback = async () => jestMockFn();
+        const { refetch } = useQuery('some-query', callback);
+
+        await startTimeout(0);
+
+        expect(jestMockFn).not.toHaveBeenCalled();
+
+        await refetch();
+
+        expect(jestMockFn).toHaveBeenCalled();
+    });
+
     it('throws an error if the callback doesnt return a Promise', () => {
         // @ts-ignore
         const { error, status, isError } = useQuery('some-query', () => {});
