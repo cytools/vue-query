@@ -2,12 +2,12 @@
  * External dependencies.
  */
 import { computed } from 'vue-demi';
-import useQueryClient from '@/vue/useQueryClient';
-import { QueryNetworkStatus } from '@/enums/QueryStatus';
 
 /**
  * Internal dependencies.
  */
+import useQueryClient from '@/vue/useQueryClient';
+import { QueryNetworkStatus } from '@/enums/QueryStatus';
 
 export type QueryCallback<T> = () => Promise<T>;
 export type QueryOptions<T> = {
@@ -73,6 +73,7 @@ export default function useQuery<T>(
         refetch,
         data: computed(() => query.value.data),
         error: computed(() => query.value.error),
+        status: computed(() => query.value.status),
         isIdle: computed(() => query.value.status === QueryNetworkStatus.IDLE),
         isError: computed(() => query.value.status === QueryNetworkStatus.ERROR),
         isLoading: computed(() => query.value.status === QueryNetworkStatus.LOADING),
