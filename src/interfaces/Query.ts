@@ -1,10 +1,10 @@
 /**
  * Internal dependencies.
  */
-import { QueryNetworkStatus } from '@/enums/QueryStatus';
+import { QueryStatus } from '@/enums/QueryStatus';
 
 export interface Query<TData> {
     data: TData | null,
     error: any,
-    status: QueryNetworkStatus,
+    status: QueryStatus,
 }

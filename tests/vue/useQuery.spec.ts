@@ -4,7 +4,7 @@
 import useQuery from '@/vue/useQuery';
 import { startTimeout } from '@/support/helpers';
 import useQueryClient from '@/vue/useQueryClient';
-import { QueryNetworkStatus } from '@/enums/QueryStatus';
+import { QueryStatus } from '@/enums/QueryStatus';
 
 describe('useQuery', () => {
     beforeEach(() => {
@@ -19,7 +19,7 @@ describe('useQuery', () => {
         const { status, isLoading } = useQuery('some-query', callback);
 
         expect(isLoading.value).toBeTruthy();
-        expect(status.value).toEqual(QueryNetworkStatus.LOADING);
+        expect(status.value).toEqual(QueryStatus.LOADING);
         expect(jestMockFn).toHaveBeenCalled();
     });
 
@@ -62,7 +62,7 @@ describe('useQuery', () => {
         const { error, status, isError } = useQuery('some-query', () => {});
 
         expect(isError.value).toBeTruthy();
-        expect(status.value).toEqual(QueryNetworkStatus.ERROR);
+        expect(status.value).toEqual(QueryStatus.ERROR);
         expect(error.value).not.toBeNull();
         expect(error.value.message).toEqual('The provided callback doesn\'t return a promise!');
     });

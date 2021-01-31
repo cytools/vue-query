@@ -7,7 +7,7 @@ import { ref } from 'vue-demi';
  * Internal dependencies.
  */
 import { QueryCache } from '@/types/Query';
-import { QueryNetworkStatus } from '@/enums/QueryStatus';
+import { QueryStatus } from '@/enums/QueryStatus';
 import useQueryInit, { defaultQueryOptions } from '@/vue/useQueryInit';
 
 const cache: QueryCache = ref({});
@@ -36,7 +36,7 @@ describe('useQueryInit', () => {
         const queryData = {
             data: ['anything'],
             error: null,
-            status: QueryNetworkStatus.SUCCESS,
+            status: QueryStatus.SUCCESS,
         };
         cache.value['some-query'] = queryData;
 
@@ -64,7 +64,7 @@ describe('useQueryInit', () => {
         const dataToUpdateQueryWith = {
             data: 'testing',
             error: null,
-            status: QueryNetworkStatus.LOADING,
+            status: QueryStatus.LOADING,
         };
         updateQuery('some-query', dataToUpdateQueryWith);
 
@@ -86,7 +86,7 @@ describe('useQueryInit', () => {
         const queryData = {
             data: ['anything'],
             error: null,
-            status: QueryNetworkStatus.SUCCESS,
+            status: QueryStatus.SUCCESS,
         };
         cache.value['some-query'] = queryData;
 

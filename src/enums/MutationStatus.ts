@@ -1,4 +1,4 @@
-export enum QueryStatus {
+export enum MutationStatus {
     IDLE = 'idle',
     ERROR = 'error',
     LOADING = 'loading',

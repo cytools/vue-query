@@ -9,12 +9,12 @@ import { isObject, defaults } from 'lodash';
  */
 import { Query } from '@/interfaces/Query';
 import { QueryCache } from '@/types/Query';
-import { QueryNetworkStatus } from '@/enums/QueryStatus';
+import { QueryStatus } from '@/enums/QueryStatus';
 
 export const defaultQueryOptions = {
     data: null,
     error: null,
-    status: QueryNetworkStatus.IDLE,
+    status: QueryStatus.IDLE,
 } as const;
 
 const convertToStringKey = (key: string | string[]) => {

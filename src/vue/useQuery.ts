@@ -7,7 +7,7 @@ import { computed } from 'vue-demi';
  * Internal dependencies.
  */
 import useQueryClient from '@/vue/useQueryClient';
-import { QueryNetworkStatus } from '@/enums/QueryStatus';
+import { QueryStatus } from '@/enums/QueryStatus';
 
 export type QueryCallback<TData> = () => Promise<TData>;
 export type QueryOptions<TData> = {
@@ -31,12 +31,12 @@ export default function useQuery<TData>(
     const query = addQuery(key, { data: defaultData });
 
     const refetch = async () => {
-        if (query.value.status === QueryNetworkStatus.LOADING || !callback) {
+        if (query.value.status === QueryStatus.LOADING || !callback) {
             return;
         }
 
         updateQuery(key, {
-            status: QueryNetworkStatus.LOADING,
+            status: QueryStatus.LOADING,
         });
 
         try {
@@ -49,7 +49,7 @@ export default function useQuery<TData>(
 
             const updatedQuery = updateQuery(key, {
                 data: await callbackResult,
-                status: QueryNetworkStatus.SUCCESS,
+                status: QueryStatus.SUCCESS,
             });
 
             onSuccess(updatedQuery.value.data);
@@ -57,7 +57,7 @@ export default function useQuery<TData>(
         } catch (error) {
             updateQuery(key, {
                 error,
-                status: QueryNetworkStatus.ERROR,
+                status: QueryStatus.ERROR,
             });
             onError(error);
         }
@@ -74,10 +74,10 @@ export default function useQuery<TData>(
         data: computed(() => query.value.data),
         error: computed(() => query.value.error),
         status: computed(() => query.value.status),
-        isIdle: computed(() => query.value.status === QueryNetworkStatus.IDLE),
-        isError: computed(() => query.value.status === QueryNetworkStatus.ERROR),
-        isLoading: computed(() => query.value.status === QueryNetworkStatus.LOADING),
-        isSuccess: computed(() => query.value.status === QueryNetworkStatus.SUCCESS),
+        isIdle: computed(() => query.value.status === QueryStatus.IDLE),
+        isError: computed(() => query.value.status === QueryStatus.ERROR),
+        isLoading: computed(() => query.value.status === QueryStatus.LOADING),
+        isSuccess: computed(() => query.value.status === QueryStatus.SUCCESS),
         updateQueryData: (updateQueryDataCB: (data: TData) => TData) => updateQueryData(key, updateQueryDataCB),
     };
 }
