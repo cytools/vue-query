@@ -2,9 +2,9 @@
  * Internal dependencies.
  */
 import useQuery from '@/vue/useQuery';
+import { startTimeout } from '@/support/helpers';
 import useQueryClient from '@/vue/useQueryClient';
 import { QueryNetworkStatus } from '@/enums/QueryStatus';
-import { startTimeout } from '@/support/helpers';
 
 describe('useQuery', () => {
     beforeEach(() => {
@@ -45,5 +45,17 @@ describe('useQuery', () => {
 
         expect(isSuccess.value).toBeTruthy();
         expect(data.value).toEqual(dataToReturn);
+    });
+
+    it('returns the data from a cached query', () => {
+        const { addQuery } = useQueryClient<string>();
+
+        addQuery('some-query', {
+            data: 'test',
+        });
+
+        const { data } = useQuery('some-query');
+
+        expect(data.value).toEqual('test');
     });
 });
