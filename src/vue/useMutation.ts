@@ -9,21 +9,21 @@ import { computed, ref, Ref } from 'vue-demi';
  */
 import { MutationStatus } from '@/enums/MutationStatus';
 
-export type MutationCallback<TData> = (variables: any) => Promise<TData>;
-export type MutationOptions<TData> = {
-    onMutate: (varaibles: any) => Promise<TData | null>;
-    onError: (error: any, variables: any, context: any) => void;
-    onSuccess: (result: TData, variables: any, context: any) => void;
+export type MutationCallback<TData, TVariables> = (variables?: TVariables) => Promise<TData>;
+export type MutationOptions<TData, TVariables> = {
+    onMutate: (variables?: TVariables) => Promise<TData | null>;
+    onError: (error: any, variables?: TVariables, context?: any) => void;
+    onSuccess: (result: TData, variables?: TVariables, context?: any) => void;
 };
 
 /* eslint-disable */
-export default function useMutation<TData>(
-    callback: MutationCallback<TData>,
+export default function useMutation<TData = any, TVariables = undefined>(
+    callback: MutationCallback<TData, TVariables>,
     {
+        onError = () => null,
+        onSuccess = () => null,
         onMutate = async () => null,
-        onError = (error, variables, context) => null,
-        onSuccess = (result, variables, context) => null,
-    }: Partial<MutationOptions<TData>> = {},
+    }: Partial<MutationOptions<TData, TVariables>> = {},
 ) {
     const data: Ref<TData | null> = ref(null);
     const error = ref(null);
@@ -37,7 +37,7 @@ export default function useMutation<TData>(
         isSuccess: computed(() => status.value === MutationStatus.SUCCESS),
         isLoading: computed(() => status.value === MutationStatus.LOADING),
     });
-    const mutate = async (variables: any) => {
+    const mutate = async (variables?: TVariables) => {
         if (status.value === MutationStatus.LOADING) {
             return;
         }
@@ -52,7 +52,14 @@ export default function useMutation<TData>(
                 data.value = context.value;
             }
 
-            data.value = await callback(variables);
+            const callbackResult = callback(variables);
+
+            // @ts-ignore
+            if (!(callbackResult instanceof Promise)) {
+                throw new Error('The provided callback doesn\'t return a promise!');
+            }
+
+            data.value = await callbackResult;
             status.value = MutationStatus.SUCCESS;
 
             onSuccess(data.value, variables, context.value);
