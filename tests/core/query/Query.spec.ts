@@ -23,4 +23,16 @@ describe('Query', () => {
 
         expect(query.isSuccess).toBeTruthy();
     });
+
+    it('can update the data only', () => {
+        const query = new Query<string[]>({ data: ['test'] });
+
+        expect(query.data.value).toEqual(['test']);
+
+        query.updateData((data) => {
+            return [...(data || []), 'hey'];
+        });
+
+        expect(query.data.value).toEqual(['test', 'hey']);
+    });
 });
