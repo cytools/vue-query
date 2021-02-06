@@ -7,7 +7,7 @@ import { isObject, defaults } from 'lodash';
 /**
  * Internal dependencies.
  */
-import { Query } from '@/interfaces/Query';
+import { QueryData } from '@/interfaces/QueryData';
 import { QueryCache } from '@/types/Query';
 import { QueryStatus } from '@/enums/QueryStatus';
 
@@ -40,9 +40,9 @@ const cloneQueryData = (data: any) => {
 };
 export default function useQueryInit<TData>(cache: QueryCache) {
     const getDefaultQuery = () => {
-        return computed<Query<TData>>(() => defaultQueryOptions);
+        return computed<QueryData<TData>>(() => defaultQueryOptions);
     };
-    const addQuery = (key: string, initialData: Partial<Query<TData>> = {}) => {
+    const addQuery = (key: string, initialData: Partial<QueryData<TData>> = {}) => {
         key = convertToStringKey(key);
 
         if (queryExists(key)) {
@@ -53,12 +53,12 @@ export default function useQueryInit<TData>(cache: QueryCache) {
 
         cache.value = {
             ...cache.value,
-            [key]: initialData as Query<TData>,
+            [key]: initialData as QueryData<TData>,
         };
 
         return getQuery(key);
     };
-    const updateQuery = (key: string, queryData: Partial<Query<TData>>) => {
+    const updateQuery = (key: string, queryData: Partial<QueryData<TData>>) => {
         key = convertToStringKey(key);
 
         if (!queryExists(key)) {
@@ -70,7 +70,7 @@ export default function useQueryInit<TData>(cache: QueryCache) {
 
         cache.value = {
             ...cache.value,
-            [key]: { ...queryData as Query<TData> },
+            [key]: { ...queryData as QueryData<TData> },
         };
 
         return getQuery(key);
