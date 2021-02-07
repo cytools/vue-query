@@ -1,7 +1,6 @@
 /**
  * Internal dependencies.
  */
-
 import Query from '@/core/query/Query';
 import { QueryStatus } from '@/enums/QueryStatus';
 
@@ -12,6 +11,7 @@ describe('Query', () => {
         expect(query.data.value).toBeNull();
         expect(query.error.value).toBeNull();
         expect(query.isIdle.value).toBeTruthy();
+        expect(query.status.value).toEqual(QueryStatus.IDLE);
     });
 
     it('can be updated', () => {
@@ -22,6 +22,7 @@ describe('Query', () => {
         });
 
         expect(query.isSuccess).toBeTruthy();
+        expect(query.status.value).toEqual(QueryStatus.SUCCESS);
     });
 
     it('can update the data only', () => {
@@ -29,9 +30,7 @@ describe('Query', () => {
 
         expect(query.data.value).toEqual(['test']);
 
-        query.updateData((data) => {
-            return [...(data || []), 'hey'];
-        });
+        query.updateData((data) => [...(data || []), 'hey']);
 
         expect(query.data.value).toEqual(['test', 'hey']);
     });

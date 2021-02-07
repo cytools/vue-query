@@ -43,6 +43,10 @@ class Query<TData, TError = any> {
         return computed(() => this.queryData.value.data);
     }
 
+    get status() {
+        return computed(() => this.queryData.value.status);
+    }
+
     get error() {
         return computed(() => this.queryData.value.error);
     }
