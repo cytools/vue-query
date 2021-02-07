@@ -10,10 +10,16 @@ class QueryClient<TData, TError = any> {
         protected cache: Cache<Query<TData, TError>>,
     ) {}
 
-    addQuery(key: string, query: Partial<QueryData<TData>>) {
-        this.cache.put(key, new Query<TData, TError>(query));
+    addQuery(key: string, queryData: Partial<QueryData<TData>>) {
+        const query = this.getQuery(key);
 
-        return this;
+        if (query.value) {
+            return query;
+        }
+
+        this.cache.put(key, new Query<TData, TError>(queryData));
+
+        return this.getQuery(key);
     }
 
     removeQuery(key: string) {
@@ -24,6 +30,10 @@ class QueryClient<TData, TError = any> {
 
     getQuery(key: string) {
         return this.cache.get(key);
+    }
+
+    reset() {
+        return this.cache.clear();
     }
 }
 

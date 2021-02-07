@@ -25,6 +25,19 @@ describe('Query Client', () => {
         expect(query.value).not.toBeNull();
     });
 
+    it('returns the query from cache if found in cache', () => {
+        queryClient.addQuery('test', {
+            data: 'test',
+            error: null,
+        });
+
+        const query = queryClient.addQuery('test', {
+            data: 'hacker',
+        });
+
+        expect(query?.value?.data).toEqual(['test']);
+    });
+
     it('can remove a query from the cache', () => {
         queryClient.addQuery('test', {
             data: 'test',

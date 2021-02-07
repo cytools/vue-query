@@ -66,6 +66,28 @@ class Query<TData, TError = any> {
     get isSuccess() {
         return computed(() => this.queryData.value.status === QueryStatus.SUCCESS);
     }
+
+    get composableObject() {
+        const {
+            data,
+            status,
+            error,
+            isIdle,
+            isError,
+            isLoading,
+            isSuccess,
+        } = this;
+
+        return {
+            data,
+            status,
+            error,
+            isIdle,
+            isError,
+            isLoading,
+            isSuccess,
+        };
+    }
 }
 
 export default Query;

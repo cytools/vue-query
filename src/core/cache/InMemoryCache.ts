@@ -8,15 +8,17 @@ import { ref, computed, Ref } from 'vue-demi';
  */
 import Cache, { CacheData } from '@/core/cache/Cache';
 
-class InMemoryCache<TData> implements Cache<TData> {
+class InMemoryCache<TData> extends Cache<TData> {
     protected cache: Ref<CacheData<TData | null>>;
 
     constructor(initialData: CacheData<TData> = {}) {
+        super();
+
         this.cache = ref(initialData) as Ref<CacheData<TData>>;
     }
 
     public put(key: string, data: TData | null) {
-        this.cache.value[key] = data;
+        this.cache.value[key] = this.clone(data);
 
         return this;
     }
