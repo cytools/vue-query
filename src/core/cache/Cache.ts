@@ -1,6 +1,15 @@
-interface Cache<TData, TReturnData> {
-    put: (key: string, data: TData) => this;
-    get: (key: string) => TReturnData;
+/**
+ * External dependencies.
+ */
+import { ComputedRef } from 'vue-demi';
+
+/**
+ * Internal dependencies.
+ */
+
+interface Cache<TData> {
+    put: (key: string, data: TData | null) => this;
+    get: (key: string) => ComputedRef<TData | null>;
     remove: (key: string) => this;
     count: () => number;
     clear: () => this;

@@ -1,14 +1,14 @@
 /**
  * External dependencies.
  */
-import { ref, computed, Ref, ComputedRef } from 'vue-demi';
+import { ref, computed, Ref } from 'vue-demi';
 
 /**
  * Internal dependencies.
  */
 import Cache, { CacheData } from '@/core/cache/Cache';
 
-class InMemoryCache<TData> implements Cache<TData, ComputedRef<TData | null>> {
+class InMemoryCache<TData> implements Cache<TData> {
     protected cache: Ref<CacheData<TData | null>>;
 
     constructor(initialData: CacheData<TData> = {}) {
