@@ -9,7 +9,7 @@ describe('Query Client', () => {
     let queryClient: QueryClient<string>;
 
     beforeEach(() => {
-        queryClient = new QueryClient(new InMemoryCache<Query<string>>());
+        queryClient = new QueryClient({ cache: new InMemoryCache<Query<string>>() });
     });
 
     it('can add a query to the cache', () => {
@@ -23,6 +23,8 @@ describe('Query Client', () => {
         });
 
         expect(query.value).not.toBeNull();
+        expect(query.value?.data).toEqual('test');
+        expect(query.value?.error).toBeNull();
     });
 
     it('returns the query from cache if found in cache', () => {
@@ -35,7 +37,9 @@ describe('Query Client', () => {
             data: 'hacker',
         });
 
-        expect(query?.value?.data).toEqual(['test']);
+        expect(query.value).not.toBeNull();
+        expect(query.value?.data).toEqual('test');
+        expect(query.value?.error).toBeNull();
     });
 
     it('can remove a query from the cache', () => {
@@ -47,6 +51,8 @@ describe('Query Client', () => {
         const query = queryClient.getQuery('test');
 
         expect(query.value).not.toBeNull();
+        expect(query.value?.data).toEqual('test');
+        expect(query.value?.error).toBeNull();
 
         queryClient.removeQuery('test');
 
