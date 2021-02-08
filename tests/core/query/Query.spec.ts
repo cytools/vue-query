@@ -8,10 +8,10 @@ describe('Query', () => {
     it('has initial state', () => {
         const query = new Query();
 
-        expect(query.data.value).toBeNull();
-        expect(query.error.value).toBeNull();
-        expect(query.isIdle.value).toBeTruthy();
-        expect(query.status.value).toEqual(QueryStatus.IDLE);
+        expect(query.data).toBeNull();
+        expect(query.error).toBeNull();
+        expect(query.isIdle).toBeTruthy();
+        expect(query.status).toEqual(QueryStatus.IDLE);
     });
 
     it('can be updated', () => {
@@ -22,28 +22,28 @@ describe('Query', () => {
         });
 
         expect(query.isSuccess).toBeTruthy();
-        expect(query.status.value).toEqual(QueryStatus.SUCCESS);
+        expect(query.status).toEqual(QueryStatus.SUCCESS);
     });
 
     it('can update the data only', () => {
         const query = new Query<string[]>({ data: ['test'] });
 
-        expect(query.data.value).toEqual(['test']);
+        expect(query.data).toEqual(['test']);
 
         query.updateData((data) => [...(data || []), 'hey']);
 
-        expect(query.data.value).toEqual(['test', 'hey']);
+        expect(query.data).toEqual(['test', 'hey']);
     });
 
     it('returns the composable object for using in vue composables', () => {
         const query = new Query<string[]>({ data: ['test'] });
 
-        expect(query.composableObject.data.value).toEqual(['test']);
-        expect(query.composableObject.error.value).toEqual(null);
-        expect(query.composableObject.status.value).toEqual(QueryStatus.IDLE);
-        expect(query.composableObject.isIdle.value).toBeTruthy();
-        expect(query.composableObject.isLoading.value).toBeFalsy();
-        expect(query.composableObject.isSuccess.value).toBeFalsy();
-        expect(query.composableObject.isError.value).toBeFalsy();
+        expect(query.composableObject.data).toEqual(['test']);
+        expect(query.composableObject.error).toEqual(null);
+        expect(query.composableObject.status).toEqual(QueryStatus.IDLE);
+        expect(query.composableObject.isIdle).toBeTruthy();
+        expect(query.composableObject.isLoading).toBeFalsy();
+        expect(query.composableObject.isSuccess).toBeFalsy();
+        expect(query.composableObject.isError).toBeFalsy();
     });
 });
