@@ -1,7 +1,7 @@
 /**
  * External dependencies.
  */
-import { ref, computed, Ref } from 'vue-demi';
+import { computed, ref, Ref } from 'vue-demi';
 
 /**
  * Internal dependencies.
@@ -18,7 +18,7 @@ class InMemoryCache<TData> extends Cache<TData> {
     }
 
     public put(key: string, data: TData | null) {
-        this.cache.value[key] = this.clone(data);
+        this.cache.value[key] = data;
 
         return this;
     }
@@ -34,8 +34,7 @@ class InMemoryCache<TData> extends Cache<TData> {
     }
 
     public count(): number {
-        return Object.keys(this.cache.value)
-            .reduce((total, key) => this.cache.value[key] ? ++total : total, 0);
+        return Object.keys(this.cache.value).reduce((total, key) => this.cache.value[key] ? ++total : total, 0);
     }
 
     public clear() {
