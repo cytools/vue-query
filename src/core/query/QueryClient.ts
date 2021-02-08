@@ -4,11 +4,14 @@
 import Cache from '@/core/cache/Cache';
 import Query from '@/core/query/Query';
 import { QueryData } from '@/interfaces/QueryData';
+import { QueryClientConfig } from '@/interfaces/QueryClientConfig';
 
 class QueryClient<TData, TError = any> {
-    constructor(
-        protected cache: Cache<Query<TData, TError>>,
-    ) {}
+    protected cache: Cache<Query<TData, TError>>;
+
+    constructor(config: QueryClientConfig<TData, TError>) {
+        this.cache = config.cache;
+    }
 
     addQuery(key: string, queryData: Partial<QueryData<TData>>) {
         const query = this.getQuery(key);
