@@ -8,9 +8,9 @@ import { QueryStatus } from '@/enums/QueryStatus';
 
 describe('useQuery', () => {
     beforeEach(() => {
-        const { resetCache } = useQueryClient();
+        const { queryClient } = useQueryClient();
 
-        resetCache();
+        queryClient.reset();
     });
 
     it('calls the callback immediately', () => {
@@ -82,9 +82,9 @@ describe('useQuery', () => {
     });
 
     it('returns the data from a cached query', () => {
-        const { addQuery } = useQueryClient<string>();
+        const { queryClient } = useQueryClient<string>();
 
-        addQuery('some-query', {
+        queryClient.addQuery('some-query', {
             data: 'test',
         });
 

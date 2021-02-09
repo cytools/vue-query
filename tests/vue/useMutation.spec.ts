@@ -6,9 +6,9 @@ import useMutation from '@/vue/useMutation';
 
 describe('useMutation', () => {
     beforeEach(() => {
-        const { resetCache } = useQueryClient();
+        const { queryClient } = useQueryClient();
 
-        resetCache();
+        queryClient.reset();
     });
 
     it('runs mutation callback when calling mutate', async () => {

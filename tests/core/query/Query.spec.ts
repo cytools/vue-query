@@ -38,12 +38,12 @@ describe('Query', () => {
     it('returns the composable object for using in vue composables', () => {
         const query = new Query<string[]>({ data: ['test'] });
 
-        expect(query.composableObject.data).toEqual(['test']);
-        expect(query.composableObject.error).toEqual(null);
-        expect(query.composableObject.status).toEqual(QueryStatus.IDLE);
-        expect(query.composableObject.isIdle).toBeTruthy();
-        expect(query.composableObject.isLoading).toBeFalsy();
-        expect(query.composableObject.isSuccess).toBeFalsy();
-        expect(query.composableObject.isError).toBeFalsy();
+        expect(query.composableObject.data.value).toEqual(['test']);
+        expect(query.composableObject.error.value).toEqual(null);
+        expect(query.composableObject.status.value).toEqual(QueryStatus.IDLE);
+        expect(query.composableObject.isIdle.value).toBeTruthy();
+        expect(query.composableObject.isLoading.value).toBeFalsy();
+        expect(query.composableObject.isSuccess.value).toBeFalsy();
+        expect(query.composableObject.isError.value).toBeFalsy();
     });
 });

@@ -13,7 +13,7 @@ class QueryClient<TData, TError = any> {
         this.cache = config.cache;
     }
 
-    addQuery(key: string, queryData: Partial<QueryData<TData>>) {
+    addQuery(key: string, queryData: Partial<QueryData<TData, TError>>) {
         const query = this.getQuery(key);
 
         if (query.value) {

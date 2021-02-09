@@ -1,7 +1,7 @@
 /**
  * External dependencies.
  */
-import { computed } from 'vue-demi';
+import { toRefs } from 'vue-demi';
 
 /**
  * Internal dependencies.
@@ -10,14 +10,14 @@ import useQueryClient from '@/vue/useQueryClient';
 import { QueryStatus } from '@/enums/QueryStatus';
 
 export type QueryCallback<TData> = () => Promise<TData>;
-export type QueryOptions<TData> = {
-    onError: (error: any) => void;
-    onSuccess: (data: TData) => void;
-    onDataReceive: (data: TData) => void;
+export type QueryOptions<TData, TError> = {
+    onError: (error: TError) => void;
+    onSuccess: (data: TData | null | undefined) => void;
+    onDataReceive: (data: TData | null | undefined) => void;
     defaultData: TData | null;
 };
 
-export default function useQuery<TData>(
+export default function useQuery<TData, TError = any>(
     key: string,
     callback: QueryCallback<TData> | null = null,
     {
@@ -25,17 +25,17 @@ export default function useQuery<TData>(
         onSuccess = () => {},
         onDataReceive = () => {},
         defaultData = null,
-    }: Partial<QueryOptions<TData>> = {},
+    }: Partial<QueryOptions<TData, TError>> = {},
 ) {
-    const { addQuery, updateQuery, updateQueryData } = useQueryClient<TData>();
-    const query = addQuery(key, { data: defaultData });
+    const { queryClient } = useQueryClient<TData, TError>();
+    const query = queryClient.addQuery(key, { data: defaultData });
 
     const refetch = async () => {
-        if (query.value.status === QueryStatus.LOADING || !callback) {
+        if (query.value?.isLoading || !callback) {
             return;
         }
 
-        updateQuery(key, {
+        query.value?.update({
             status: QueryStatus.LOADING,
         });
 
@@ -47,15 +47,15 @@ export default function useQuery<TData>(
                 throw new Error('The provided callback doesn\'t return a promise!');
             }
 
-            const updatedQuery = updateQuery(key, {
+            query.value?.update({
                 data: await callbackResult,
                 status: QueryStatus.SUCCESS,
             });
 
-            onSuccess(updatedQuery.value.data);
-            onDataReceive(updatedQuery.value.data);
+            onSuccess(query.value?.data);
+            onDataReceive(query.value?.data);
         } catch (error) {
-            updateQuery(key, {
+            query.value?.update({
                 error,
                 status: QueryStatus.ERROR,
             });
@@ -63,21 +63,20 @@ export default function useQuery<TData>(
         }
     };
 
-    if (!query.value.data && callback) {
+    if (!query.value?.data && callback) {
         void refetch();
     } else {
-        onDataReceive(query.value.data);
+        onDataReceive(query.value?.data);
     }
 
     return {
         refetch,
-        data: computed(() => query.value.data),
-        error: computed(() => query.value.error),
-        status: computed(() => query.value.status),
-        isIdle: computed(() => query.value.status === QueryStatus.IDLE),
-        isError: computed(() => query.value.status === QueryStatus.ERROR),
-        isLoading: computed(() => query.value.status === QueryStatus.LOADING),
-        isSuccess: computed(() => query.value.status === QueryStatus.SUCCESS),
-        updateQueryData: (updateQueryDataCB: (data: TData) => TData) => updateQueryData(key, updateQueryDataCB),
+        updateQueryData: (updateQueryDataCB: (data: TData | null) => TData) => query.value?.updateData(updateQueryDataCB),
+
+        // spread the composable object so we get autocomplete
+        ...query.value?.composableObject,
+
+        // spread the composable object with refs and overwrite the above composableObject
+        ...toRefs(query.value?.composableObject || {}),
     };
 }

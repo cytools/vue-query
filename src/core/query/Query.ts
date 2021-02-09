@@ -1,7 +1,7 @@
 /**
  * External dependencies.
  */
-import { reactive } from 'vue-demi';
+import { computed, reactive } from 'vue-demi';
 
 /**
  * Internal dependencies.
@@ -64,24 +64,14 @@ class Query<TData, TError = any> {
     }
 
     get composableObject() {
-        const {
-            data,
-            status,
-            error,
-            isIdle,
-            isError,
-            isLoading,
-            isSuccess,
-        } = this;
-
         return {
-            data,
-            status,
-            error,
-            isIdle,
-            isError,
-            isLoading,
-            isSuccess,
+            data: computed(() => this.data),
+            status: computed(() => this.status),
+            error: computed(() => this.error),
+            isIdle: computed(() => this.isIdle),
+            isError: computed(() => this.isError),
+            isLoading: computed(() => this.isLoading),
+            isSuccess: computed(() => this.isSuccess),
         };
     }
 }

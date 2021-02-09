@@ -1,20 +1,26 @@
 /**
  * External dependencies.
  */
-import { ref } from 'vue-demi';
+import { inject } from 'vue-demi';
 
 /**
  * Internal dependencies.
  */
-import useQueryInit from '@/vue/useQueryInit';
-import { QueryCache } from '@/types/Query';
+import Query from '@/core/query/Query';
+import QueryClient from '@/core/query/QueryClient';
+import InMemoryCache from '@/core/cache/InMemoryCache';
 
-const cache: QueryCache = ref({});
-export default function useQueryClient<TData = any>() {
-    const resetCache = () => cache.value = {};
+let initializedQueryClient: any = null;
+export default function useQueryClient<TData = any, TError = any>() {
+    let queryClient: QueryClient<TData, TError> = inject('vue-query-query-client') as QueryClient<TData, TError>;
+
+    if (!queryClient) {
+        initializedQueryClient = initializedQueryClient
+            || new QueryClient<TData, TError>({ cache: new InMemoryCache<Query<TData>>() });
+        queryClient = initializedQueryClient;
+    }
 
     return {
-        resetCache,
-        ...useQueryInit<TData>(cache),
+        queryClient,
     };
 }
