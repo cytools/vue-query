@@ -1,4 +1,9 @@
 /**
+ * External dependencies.
+ */
+import { watch } from 'vue-demi';
+
+/**
  * Internal dependencies.
  */
 import Query from '@/core/query/Query';
@@ -57,5 +62,22 @@ describe('Query Client', () => {
         queryClient.removeQuery('test');
 
         expect(query.value).toBeNull();
+    });
+
+    it('returned query is reactive', (done) => {
+        const query = queryClient.addQuery('test', {
+            data: 'test',
+            error: null,
+        });
+
+        expect(query.value?.data).toBe('test');
+
+        watch(query, updatedQuery => {
+            expect(updatedQuery?.data).toBe('testing');
+
+            done();
+        }, { deep: true });
+
+        query.value?.updateData(() => 'testing');
     });
 });

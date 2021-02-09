@@ -1,4 +1,9 @@
 /**
+ * External dependencies.
+ */
+import { reactive } from 'vue-demi';
+
+/**
  * Internal dependencies.
  */
 import { QueryStatus } from '@/enums/QueryStatus';
@@ -12,14 +17,14 @@ class Query<TData, TError = any> {
         error = null,
         status = QueryStatus.IDLE,
     }: Partial<QueryData<TData, TError>> = {}) {
-        this.queryData = { data, error, status };
+        this.queryData = reactive({ data, error, status }) as QueryData<TData, TError>;
     }
 
     update(queryData: Partial<QueryData<TData>>): this {
-        this.queryData = {
+        this.queryData = reactive({
             ...this.queryData,
             ...queryData,
-        };
+        }) as QueryData<TData, TError>;
 
         return this;
     }
