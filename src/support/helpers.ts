@@ -3,9 +3,8 @@ export const startTimeout = (time: number) => {
     const promise = new Promise((resolve) => {
         timeoutId = setTimeout(resolve, time);
     });
-    const cancel = () => timeoutId && clearTimeout(timeoutId);
     // @ts-ignore
-    promise.cancel = cancel;
+    promise.cancel = () => timeoutId && clearTimeout(timeoutId);
 
     return promise;
 };
