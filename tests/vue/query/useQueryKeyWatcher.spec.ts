@@ -6,8 +6,8 @@ import { ref } from 'vue-demi';
 /**
  * Internal dependencies.
  */
-import useQueryKeyWatcher from '@/vue/query/useQueryKeyWatcher';
 import { startTimeout } from '@/support/helpers';
+import useQueryKeyWatcher from '@/vue/query/useQueryKeyWatcher';
 
 describe('useQueryKeyWatcher', () => {
     it('returns empty variables list if the key is just a string', () => {
