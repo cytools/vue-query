@@ -51,6 +51,9 @@
     ],
     "author": "KaloyanYosifov",
     "license": "MIT",
+    "files": [
+        "dist/*"
+    ],
     "bugs": {
         "url": "https://github.com/KaloyanYosifov/vue-query/issues"
     },
