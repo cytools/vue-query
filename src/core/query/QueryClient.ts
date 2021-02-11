@@ -13,7 +13,9 @@ class QueryClient<TData, TError = any> {
         this.cache = config.cache;
     }
 
-    addQuery(key: string, queryData: Partial<QueryData<TData, TError>>) {
+    addQuery(key: string | any[], queryData: Partial<QueryData<TData, TError>>) {
+        key = this.convertKey(key);
+
         const query = this.getQuery(key);
 
         if (query.value) {
@@ -25,18 +27,26 @@ class QueryClient<TData, TError = any> {
         return this.getQuery(key);
     }
 
-    removeQuery(key: string) {
-        this.cache.remove(key);
+    removeQuery(key: string | any[]) {
+        this.cache.remove(this.convertKey(key));
 
         return this;
     }
 
-    getQuery(key: string) {
-        return this.cache.get(key);
+    getQuery(key: string | any[]) {
+        return this.cache.get(this.convertKey(key));
     }
 
     reset() {
         return this.cache.clear();
+    }
+
+    protected convertKey(key: string | any[]): string {
+        if (Array.isArray(key)) {
+            return JSON.stringify(key);
+        }
+
+        return key;
     }
 }
 
