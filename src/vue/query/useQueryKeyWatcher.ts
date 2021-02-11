@@ -16,15 +16,15 @@ export interface QueryKeyWatcherOptions {
 
 export default function useQueryKeyWatcher({ key, callback, waitTime }: QueryKeyWatcherOptions) {
     let watches: Function[] = [];
-    let reactiveVariables: any[] = [];
+    let variables: any[] = [];
 
     if (Array.isArray(key)) {
         for (const inKey of key) {
             if (isRef(inKey)) {
-                const index = reactiveVariables.push(inKey.value) - 1;
+                const index = variables.push(inKey.value) - 1;
 
                 const onWatch = (newValue: any) => {
-                    reactiveVariables[index] = newValue;
+                    variables[index] = newValue;
 
                     callback();
                 };
@@ -40,11 +40,10 @@ export default function useQueryKeyWatcher({ key, callback, waitTime }: QueryKey
     onUnmounted(() => {
         watches.forEach((unwatch: Function) => unwatch());
         watches = [];
-        reactiveVariables = [];
+        variables = [];
     });
 
     return {
-        watches,
-        reactiveVariables,
+        variables,
     };
 }

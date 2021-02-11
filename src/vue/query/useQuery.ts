@@ -1,7 +1,7 @@
 /**
  * External dependencies.
  */
-import { Ref, reactive, toRefs, ComputedRef } from 'vue-demi';
+import { Ref, reactive, toRefs } from 'vue-demi';
 
 /**
  * Internal dependencies.
@@ -9,8 +9,9 @@ import { Ref, reactive, toRefs, ComputedRef } from 'vue-demi';
 import useQueryClient from '@/vue/useQueryClient';
 import { QueryStatus } from '@/enums/QueryStatus';
 import Query from '@/core/query/Query';
+import useQueryKeyWatcher from '@/vue/query/useQueryKeyWatcher';
 
-export type QueryCallback<TData> = () => Promise<TData>;
+export type QueryCallback<TData> = (...data: any) => Promise<TData>;
 export type QueryOptions<TData, TError> = {
     onError: (error: TError) => void;
     onSuccess: (data: TData | null | undefined) => void;
@@ -41,7 +42,11 @@ export default function useQuery<TData, TError = any>(
             onDataReceive(query.value?.data);
         }
     };
-
+    const { variables } = useQueryKeyWatcher({
+        key,
+        callback: initQuery,
+        waitTime: keyChangeRefetchWaitTime,
+    });
     const refetch = async () => {
         if (query.value?.isLoading || !callback) {
             return;
@@ -52,7 +57,7 @@ export default function useQuery<TData, TError = any>(
         });
 
         try {
-            const callbackResult = callback();
+            const callbackResult = callback(...variables);
 
             // @ts-ignore
             if (!(callbackResult instanceof Promise)) {
@@ -80,10 +85,7 @@ export default function useQuery<TData, TError = any>(
         refetch,
         updateQueryData: (updateQueryDataCB: (data: TData | null) => TData) => query.value?.updateData(updateQueryDataCB),
 
-        // spread the composable object so we get autocomplete
-        ...query.value?.composableObject,
-
         // spread the composable object with refs and overwrite the above composableObject
-        ...toRefs(query.value?.composableObject || {}),
+        ...toRefs(query.value?.composableObject),
     };
 }

@@ -1,7 +1,7 @@
 /**
  * Internal dependencies.
  */
-import useQuery from '@/vue/useQuery';
+import useQuery from '@/vue/query/useQuery';
 import { startTimeout } from '@/support/helpers';
 import useQueryClient from '@/vue/useQueryClient';
 import { QueryStatus } from '@/enums/QueryStatus';
