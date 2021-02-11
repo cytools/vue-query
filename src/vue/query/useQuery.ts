@@ -1,7 +1,7 @@
 /**
  * External dependencies.
  */
-import { Ref, reactive, toRefs } from 'vue-demi';
+import { computed, reactive, Ref } from 'vue-demi';
 
 /**
  * Internal dependencies.
@@ -21,7 +21,7 @@ export type QueryOptions<TData, TError> = {
 };
 
 export default function useQuery<TData, TError = any>(
-    key: string | Ref[],
+    key: string | Array<string | Ref>,
     callback: QueryCallback<TData> | null = null,
     {
         onError = () => {},
@@ -85,7 +85,12 @@ export default function useQuery<TData, TError = any>(
         refetch,
         updateQueryData: (updateQueryDataCB: (data: TData | null) => TData) => query.value?.updateData(updateQueryDataCB),
 
-        // spread the composable object with refs and overwrite the above composableObject
-        ...toRefs(query.value?.composableObject),
+        data: computed(() => query.value?.data),
+        status: computed(() => query.value?.status),
+        error: computed(() => query.value?.error),
+        isIdle: computed(() => query.value?.isIdle),
+        isError: computed(() => query.value?.isError),
+        isLoading: computed(() => query.value?.isLoading),
+        isSuccess: computed(() => query.value?.isSuccess),
     };
 }

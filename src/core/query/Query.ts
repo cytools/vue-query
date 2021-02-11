@@ -1,7 +1,7 @@
 /**
  * External dependencies.
  */
-import { computed, reactive } from 'vue-demi';
+import { reactive } from 'vue-demi';
 
 /**
  * Internal dependencies.
@@ -61,18 +61,6 @@ class Query<TData, TError = any> {
 
     get isSuccess() {
         return this.queryData.status === QueryStatus.SUCCESS;
-    }
-
-    get composableObject() {
-        return {
-            data: computed(() => this.data),
-            status: computed(() => this.status),
-            error: computed(() => this.error),
-            isIdle: computed(() => this.isIdle),
-            isError: computed(() => this.isError),
-            isLoading: computed(() => this.isLoading),
-            isSuccess: computed(() => this.isSuccess),
-        };
     }
 }
 

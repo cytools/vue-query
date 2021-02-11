@@ -9,7 +9,7 @@ import { isRef, watch, onUnmounted, Ref } from 'vue-demi';
  */
 
 export interface QueryKeyWatcherOptions {
-    key: string | Ref[];
+    key: string | Array<string | Ref>;
     callback: Function;
     waitTime: number;
 }

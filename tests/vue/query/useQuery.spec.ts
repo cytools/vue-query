@@ -1,4 +1,9 @@
 /**
+ * External dependencies.
+ */
+import { ref } from 'vue-demi';
+
+/**
  * Internal dependencies.
  */
 import useQuery from '@/vue/query/useQuery';
@@ -91,5 +96,46 @@ describe('useQuery', () => {
         const { data } = useQuery('some-query');
 
         expect(data.value).toEqual('test');
+    });
+
+    it('returns multiple useful properties', () => {
+        const query = useQuery('something');
+
+        expect(query.data.value).toEqual(null);
+        expect(query.error.value).toEqual(null);
+        expect(query.status.value).toEqual(QueryStatus.IDLE);
+        expect(query.isIdle.value).toBeTruthy();
+        expect(query.isLoading.value).toBeFalsy();
+        expect(query.isSuccess.value).toBeFalsy();
+        expect(query.isError.value).toBeFalsy();
+    });
+
+    it('returns another query when the key changes', async () => {
+        const queryId = ref(1);
+        const { data, isLoading } = useQuery<string[]>(
+            ['some-query', queryId],
+            async (id) => {
+                if (id === 2) {
+                    return ['id-2'];
+                }
+
+                return ['id-1'];
+            },
+            {
+                keyChangeRefetchWaitTime: 0,
+            },
+        );
+
+        expect(isLoading.value).toBeTruthy();
+
+        await startTimeout(0);
+
+        expect(data.value).toEqual(['id-1']);
+
+        queryId.value = 2;
+
+        await startTimeout(0);
+
+        expect(data.value).toEqual(['id-2']);
     });
 });

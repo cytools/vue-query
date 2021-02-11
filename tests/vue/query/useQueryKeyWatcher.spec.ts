@@ -90,4 +90,16 @@ describe('useQueryKeyWatcher', () => {
 
         expect(mockFn).toHaveBeenCalled();
     });
+
+    it('does nothing if the key is not a ref', async () => {
+        const mockFn = jest.fn();
+        const { variables } = useQueryKeyWatcher({
+            key: ['test'],
+            callback: mockFn,
+            waitTime: 0,
+        });
+
+        expect(variables).toEqual([]);
+        expect(mockFn).not.toHaveBeenCalled();
+    });
 });
