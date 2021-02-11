@@ -1,7 +1,6 @@
 {
     "name": "@cytools/vue-query",
     "version": "0.0.1",
-    "description": "",
     "main": "src/index.ts",
     "dependencies": {
         "lodash": "^4.17.20"
@@ -58,5 +57,9 @@
     "bugs": {
         "url": "https://github.com/KaloyanYosifov/vue-query/issues"
     },
-    "homepage": "https://github.com/KaloyanYosifov/vue-query#readme"
+    "homepage": "https://github.com/KaloyanYosifov/vue-query#readme",
+    "directories": {
+        "test": "tests"
+    },
+    "description": ""
 }
