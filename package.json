@@ -35,7 +35,8 @@
     "scripts": {
         "test": "jest --maxWorkers=4",
         "fix-style": "eslint --fix ./src",
-        "build": "esbuild ./src/index.ts --bundle --minify --define:process.env.NODE_ENV='production' --outfile=./dist/index.js "
+        "build-ts-declarations": "tsc --project ./tsconfig-declarations.json",
+        "build": "esbuild ./src/index.ts --bundle --minify --define:process.env.NODE_ENV='production' --outfile=./dist/index.js && npm run build-ts-declarations"
     },
     "repository": {
         "type": "git",
