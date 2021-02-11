@@ -1,10 +1,12 @@
 {
     "name": "@cytools/vue-query",
     "version": "0.0.1",
-    "main": "dist/index.js",
+    "main": "dist/vue-query.min.js",
+    "module": "dist/index.js",
     "typings": "dist/index.d.ts",
     "dependencies": {
-        "lodash": "^4.17.20"
+        "lodash": "^4.17.20",
+        "vue-demi": "^0.6.0"
     },
     "devDependencies": {
         "@types/jest": "^26.0.20",
@@ -28,15 +30,21 @@
         "eslint-plugin-vue": "^7.5.0",
         "jest": "^26.6.3",
         "ts-jest": "^26.4.4",
+        "ts-loader": "^8.0.17",
         "typescript": "^4.1.3",
-        "vue": "^3.0.*",
-        "vue-demi": "^0.6.0"
+        "vue": "3",
+        "webpack": "^5.21.2",
+        "webpack-cli": "^4.5.0"
+    },
+    "peerDependencies": {
+        "@vue/composition-api": "> ^1.0.0-beta.1",
+        "vue": "^2.0.0 || >=3.0.0-rc.0"
     },
     "scripts": {
         "test": "jest --maxWorkers=4",
         "fix-style": "eslint --fix ./src",
         "build-ts-declarations": "tsc --project ./tsconfig-declarations.json",
-        "build": "esbuild ./src/index.ts --bundle --define:process.env.NODE_ENV='production' --outfile=./dist/index.js && npm run build-ts-declarations"
+        "build": "webpack --mode=production && npm run build-ts-declarations"
     },
     "repository": {
         "type": "git",

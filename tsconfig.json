@@ -5,9 +5,11 @@
             "dom",
             "esnext"
         ],
-        "module": "esnext",
+        "module": "amd",
+        "outFile": "dist/index.js",
         "moduleResolution": "node",
-        "skipLibCheck": true,
+        "skipLibCheck": false,
+        "noLib": false,
         "esModuleInterop": true,
         "strict": true,
         "strictNullChecks": true,
