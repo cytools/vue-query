@@ -5,11 +5,11 @@
             "dom",
             "esnext"
         ],
-        "module": "amd",
-        "outFile": "dist/index.js",
+        "declaration": true,
+        "declarationDir": "./typings",
+        "module": "esnext",
         "moduleResolution": "node",
-        "skipLibCheck": false,
-        "noLib": false,
+        "skipLibCheck": true,
         "esModuleInterop": true,
         "strict": true,
         "strictNullChecks": true,
@@ -27,10 +27,22 @@
             "@/*": [
                 "src/*"
             ]
-        }
+        },
+        "plugins": [
+            {
+                "transform": "@zerollup/ts-transform-paths",
+                "exclude": [
+                    "*"
+                ]
+            }
+        ]
     },
     "include": [
-        "src",
-        "tests"
+        "src"
+    ],
+    "exclude": [
+        "typings",
+        "tests",
+        "node_modules"
     ]
 }
