@@ -1,6 +1,6 @@
 {
     "name": "@cytools/vue-query",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "main": "index.js",
     "module": "dist/vue-query.esm.js",
     "unpkg": "dist/vue-query.prod.js",

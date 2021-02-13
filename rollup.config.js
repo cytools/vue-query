@@ -85,7 +85,7 @@ function genConfig({ outFile, format, mode }) {
             }),
             isProd && terser(),
         ].filter(Boolean),
-        external: ['lodash'],
+        external: ['lodash', '@vue/composition-api', 'vue'],
     };
 }
 
