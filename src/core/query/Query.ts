@@ -10,21 +10,21 @@ import { QueryStatus } from '@/enums/QueryStatus';
 import { QueryData } from '@/interfaces/QueryData';
 
 class Query<TData, TError = any> {
-    protected queryData: QueryData<TData, TError>;
+    protected queryData: { value: QueryData<TData, TError> };
 
     constructor({
         data = null,
         error = null,
         status = QueryStatus.IDLE,
     }: Partial<QueryData<TData, TError>> = {}) {
-        this.queryData = reactive({ data, error, status }) as QueryData<TData, TError>;
+        this.queryData = reactive({ value: { data, error, status } }) as { value: QueryData<TData, TError> };
     }
 
     update(queryData: Partial<QueryData<TData>>): this {
-        this.queryData = reactive({
-            ...this.queryData,
+        this.queryData.value = {
+            ...this.queryData.value,
             ...queryData,
-        }) as QueryData<TData, TError>;
+        } as QueryData<TData, TError>;
 
         return this;
     }
@@ -36,31 +36,31 @@ class Query<TData, TError = any> {
     }
 
     get data() {
-        return this.queryData.data;
+        return this.queryData.value.data;
     }
 
     get status() {
-        return this.queryData.status;
+        return this.queryData.value.status;
     }
 
     get error() {
-        return this.queryData.error;
+        return this.queryData.value.error;
     }
 
     get isIdle() {
-        return this.queryData.status === QueryStatus.IDLE;
+        return this.queryData.value.status === QueryStatus.IDLE;
     }
 
     get isError() {
-        return this.queryData.status === QueryStatus.ERROR;
+        return this.queryData.value.status === QueryStatus.ERROR;
     }
 
     get isLoading() {
-        return this.queryData.status === QueryStatus.LOADING;
+        return this.queryData.value.status === QueryStatus.LOADING;
     }
 
     get isSuccess() {
-        return this.queryData.status === QueryStatus.SUCCESS;
+        return this.queryData.value.status === QueryStatus.SUCCESS;
     }
 }
 

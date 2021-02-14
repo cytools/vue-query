@@ -3,6 +3,7 @@
  */
 import { debounce } from 'lodash';
 import { isRef, watch, onUnmounted, Ref } from 'vue-demi';
+import useCurrentInstance from '@/vue/useCurrentInstance';
 
 /**
  * Internal dependencies.
@@ -17,6 +18,7 @@ export interface QueryKeyWatcherOptions {
 export default function useQueryKeyWatcher({ key, callback, waitTime }: QueryKeyWatcherOptions) {
     let watches: Function[] = [];
     let variables: any[] = [];
+    const instance = useCurrentInstance();
 
     if (Array.isArray(key)) {
         for (const inKey of key) {
@@ -37,11 +39,14 @@ export default function useQueryKeyWatcher({ key, callback, waitTime }: QueryKey
             }
         }
     }
-    onUnmounted(() => {
-        watches.forEach((unwatch: Function) => unwatch());
-        watches = [];
-        variables = [];
-    });
+
+    if (instance) {
+        onUnmounted(() => {
+            watches.forEach((unwatch: Function) => unwatch());
+            watches = [];
+            variables = [];
+        });
+    }
 
     return {
         variables,
