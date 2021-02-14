@@ -4,7 +4,6 @@
 import * as path from 'path';
 import typescript from 'rollup-plugin-typescript2';
 import alias from '@rollup/plugin-alias';
-import resolve from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import replace from '@rollup/plugin-replace';
 import dts from 'rollup-plugin-dts';
@@ -56,21 +55,21 @@ function genConfig({ outFile, format, mode }) {
             format: format,
             exports: 'named',
             name: format === 'umd' ? 'VueQuery' : undefined,
+            globals: {
+                'vue-demi': 'vue-demi',
+                'lodash': 'lodash',
+            },
         },
         plugins: [
             alias({
                 resolve: ['.ts'],
-                entries: { '@/': path.resolve(__dirname, 'src/') },
+                entries: {
+                    '@/': path.resolve(__dirname, 'src/'),
+                },
             }),
             typescript({
                 typescript: ttypescript,
                 useTsconfigDeclarationDir: true,
-            }),
-            resolve({
-                // pass custom options to the resolve plugin
-                customResolveOptions: {
-                    moduleDirectories: ['node_modules'],
-                },
             }),
             replace({
                 'process.env.NODE_ENV':
@@ -85,7 +84,7 @@ function genConfig({ outFile, format, mode }) {
             }),
             isProd && terser(),
         ].filter(Boolean),
-        external: ['lodash', '@vue/composition-api', 'vue'],
+        external: ['lodash', '@vue/composition-api', 'vue', 'vue-demi'],
     };
 }
 
