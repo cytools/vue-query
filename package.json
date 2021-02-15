@@ -56,7 +56,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/KaloyanYosifov/vue-query.git"
+        "url": "git+https://github.com/cytools/vue-query.git"
     },
     "keywords": [
         "vue",
@@ -64,7 +64,11 @@
         "vue-query",
         "vue-composition",
         "composition",
-        "vue3"
+        "vue3",
+        "api",
+        "requests",
+        "async",
+        "promises"
     ],
     "author": "KaloyanYosifov",
     "license": "MIT",
@@ -72,11 +76,11 @@
         "dist"
     ],
     "bugs": {
-        "url": "https://github.com/KaloyanYosifov/vue-query/issues"
+        "url": "https://github.com/cytools/vue-query/issues"
     },
-    "homepage": "https://github.com/KaloyanYosifov/vue-query#readme",
+    "homepage": "https://github.com/cytools/vue-query#readme",
     "directories": {
         "test": "tests"
     },
-    "description": ""
+    "description": "Introducing elegant way of making api requests and asynchronous functions with the composition api in Vue"
 }
