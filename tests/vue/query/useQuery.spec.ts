@@ -160,6 +160,7 @@ describe('useQuery', () => {
 
         expect(data.value?.internal?.safe).toBeFalsy();
     });
+
     it('has reactivity with classes', async () => {
         const { data, updateQueryData } = useQuery<DummyClass>(
             'test',
@@ -176,5 +177,29 @@ describe('useQuery', () => {
         await startTimeout(0);
 
         expect(data.value?.test).toEqual('test 23');
+    });
+
+    it('has default data before running callback', async () => {
+        const { data, status, isLoading, isSuccess } = useQuery<string>(
+            'test',
+            async () => {
+                await startTimeout(10);
+
+                return 'newData';
+            },
+            {
+                defaultData: 'initial',
+            },
+        );
+
+        expect(data.value).toEqual('initial');
+        expect(isLoading).toBeTruthy();
+        expect(status.value).toEqual(QueryStatus.LOADING);
+
+        // wait for the callback to execute
+        await startTimeout(10);
+
+        expect(status.value).toEqual(QueryStatus.SUCCESS);
+        expect(data.value).toEqual('newData');
     });
 });
