@@ -10,7 +10,6 @@ import useQuery from '@/vue/query/useQuery';
 import { startTimeout } from '@/support/helpers';
 import useQueryClient from '@/vue/useQueryClient';
 import { QueryStatus } from '@/enums/QueryStatus';
-import Query from '../../../src/core/query/Query';
 
 class DummyClass {
     constructor(public test: string = '') {}
