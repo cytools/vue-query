@@ -10,6 +10,7 @@ import useQuery from '@/vue/query/useQuery';
 import { startTimeout } from '@/support/helpers';
 import useQueryClient from '@/vue/useQueryClient';
 import { QueryStatus } from '@/enums/QueryStatus';
+import Query from '../../../src/core/query/Query';
 
 class DummyClass {
     constructor(public test: string = '') {}
@@ -192,14 +193,35 @@ describe('useQuery', () => {
             },
         );
 
+        expect(isLoading.value).toBeTruthy();
         expect(data.value).toEqual('initial');
-        expect(isLoading).toBeTruthy();
         expect(status.value).toEqual(QueryStatus.LOADING);
 
         // wait for the callback to execute
         await startTimeout(10);
 
-        expect(status.value).toEqual(QueryStatus.SUCCESS);
+        expect(isSuccess.value).toBeTruthy();
         expect(data.value).toEqual('newData');
+        expect(status.value).toEqual(QueryStatus.SUCCESS);
+    });
+
+    it('has the error data filled when an error is thrown from the callback', async () => {
+        const { data, status, error, isError } = useQuery<string, Error>(
+            'test',
+            async () => {
+                throw new Error('an error was thrown!');
+            },
+        );
+
+        expect(data.value).toBeNull();
+        expect(status.value).toEqual(QueryStatus.LOADING);
+
+        await startTimeout(0);
+
+        expect(data.value).toBeNull();
+        expect(isError.value).toBeTruthy();
+        expect(error.value).toBeInstanceOf(Error);
+        expect(status.value).toEqual(QueryStatus.ERROR);
+        expect(error.value?.message).toEqual('an error was thrown!');
     });
 });
