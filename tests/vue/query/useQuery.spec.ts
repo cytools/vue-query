@@ -11,6 +11,10 @@ import { startTimeout } from '@/support/helpers';
 import useQueryClient from '@/vue/useQueryClient';
 import { QueryStatus } from '@/enums/QueryStatus';
 
+class DummyClass {
+    constructor(public test: string = '') {}
+}
+
 describe('useQuery', () => {
     beforeEach(() => {
         const { queryClient } = useQueryClient();
@@ -137,5 +141,40 @@ describe('useQuery', () => {
         await startTimeout(0);
 
         expect(data.value).toEqual(['id-2']);
+    });
+
+    it('has reactivity with objects', async () => {
+        const { data, updateQueryData } = useQuery<{ internal: { safe: boolean } }>(
+            'test',
+            async () => ({ internal: { safe: true } }),
+        );
+
+        // wait for the callback to execute
+        await startTimeout(0);
+
+        expect(data.value?.internal?.safe).toBeTruthy();
+
+        updateQueryData(() => ({ internal: { safe: false } }));
+
+        await startTimeout(0);
+
+        expect(data.value?.internal?.safe).toBeFalsy();
+    });
+    it('has reactivity with classes', async () => {
+        const { data, updateQueryData } = useQuery<DummyClass>(
+            'test',
+            async () => new DummyClass('test'),
+        );
+
+        // wait for the callback to execute
+        await startTimeout(0);
+
+        expect(data.value?.test).toEqual('test');
+
+        updateQueryData(() => new DummyClass('test 23'));
+
+        await startTimeout(0);
+
+        expect(data.value?.test).toEqual('test 23');
     });
 });
