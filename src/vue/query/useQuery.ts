@@ -10,6 +10,7 @@ import useQueryClient from '@/vue/useQueryClient';
 import { QueryStatus } from '@/enums/QueryStatus';
 import Query from '@/core/query/Query';
 import useQueryKeyWatcher from '@/vue/query/useQueryKeyWatcher';
+import { startTimeout } from '@/support/helpers';
 
 export type QueryCallback<TData> = (...data: any) => Promise<TData>;
 export type QueryOptions<TData, TError> = {
@@ -17,7 +18,9 @@ export type QueryOptions<TData, TError> = {
     onSuccess: (data: TData | null | undefined) => void;
     onDataReceive: (data: TData | null | undefined) => void;
     defaultData: TData | null;
+    timesToRetryOnError: number;
     keyChangeRefetchWaitTime: number;
+    timeToWaitBeforeRetryingOnError: number;
 };
 
 export default function useQuery<TData, TError = any>(
@@ -28,7 +31,9 @@ export default function useQuery<TData, TError = any>(
         onSuccess = () => {},
         onDataReceive = () => {},
         defaultData = null,
+        timesToRetryOnError = 3,
         keyChangeRefetchWaitTime = 500,
+        timeToWaitBeforeRetryingOnError = 2000,
     }: Partial<QueryOptions<TData, TError>> = {},
 ) {
     const { queryClient } = useQueryClient<TData, TError>();
@@ -47,8 +52,12 @@ export default function useQuery<TData, TError = any>(
         callback: initQuery,
         waitTime: keyChangeRefetchWaitTime,
     });
-    const refetch = async () => {
-        if (query.value?.isLoading || !callback) {
+    const refetch = async (timesRetried = 0) => {
+        if (!callback) {
+            return;
+        }
+
+        if (query.value?.isLoading && timesRetried === 0) {
             return;
         }
 
@@ -56,14 +65,21 @@ export default function useQuery<TData, TError = any>(
             status: QueryStatus.LOADING,
         });
 
+        const callbackResult = callback(...variables);
+
+        // @ts-ignore
+        if (!(callbackResult instanceof Promise)) {
+            const error = new Error('The provided callback doesn\'t return a promise!');
+            query.value?.update({
+                error,
+                status: QueryStatus.ERROR,
+            });
+            onError(error as any);
+
+            return;
+        }
+
         try {
-            const callbackResult = callback(...variables);
-
-            // @ts-ignore
-            if (!(callbackResult instanceof Promise)) {
-                throw new Error('The provided callback doesn\'t return a promise!');
-            }
-
             query.value?.update({
                 data: await callbackResult,
                 status: QueryStatus.SUCCESS,
@@ -72,17 +88,25 @@ export default function useQuery<TData, TError = any>(
             onSuccess(query.value?.data);
             onDataReceive(query.value?.data);
         } catch (error) {
-            query.value?.update({
-                error,
-                status: QueryStatus.ERROR,
-            });
-            onError(error);
+            if (timesRetried >= timesToRetryOnError) {
+                query.value?.update({
+                    error,
+                    status: QueryStatus.ERROR,
+                });
+                onError(error);
+
+                return;
+            }
+
+            await startTimeout(timeToWaitBeforeRetryingOnError);
+
+            refetch(++timesRetried);
         }
     };
     initQuery();
 
     return {
-        refetch,
+        refetch: () => refetch(),
         updateQueryData: (updateQueryDataCB: (data: TData | null) => TData) => query.value?.updateData(updateQueryDataCB),
 
         data: computed(() => query.value?.data),

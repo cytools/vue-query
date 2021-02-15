@@ -210,6 +210,9 @@ describe('useQuery', () => {
             async () => {
                 throw new Error('an error was thrown!');
             },
+            {
+                timesToRetryOnError: 0,
+            },
         );
 
         expect(data.value).toBeNull();
@@ -221,6 +224,67 @@ describe('useQuery', () => {
         expect(isError.value).toBeTruthy();
         expect(error.value).toBeInstanceOf(Error);
         expect(status.value).toEqual(QueryStatus.ERROR);
+        expect(error.value?.message).toEqual('an error was thrown!');
+    });
+
+    it('retries if there is an error', async () => {
+        let tries = 0;
+        const { data, error, isError, isLoading, isSuccess } = useQuery<string, Error>(
+            'test',
+            async () => {
+                if (tries === 1) {
+                    return 'success';
+                }
+
+                tries++;
+
+                throw new Error('an error was thrown!');
+            },
+            {
+                timesToRetryOnError: 1,
+                timeToWaitBeforeRetryingOnError: 10,
+            },
+        );
+
+        await startTimeout(0);
+
+        expect(data.value).toBeNull();
+        expect(error.value).toBeNull();
+        expect(isError.value).toBeFalsy();
+        expect(isLoading.value).toBeTruthy();
+
+        await startTimeout(10);
+
+        expect(error.value).toBeNull();
+        expect(isError.value).toBeFalsy();
+        expect(isSuccess.value).toBeTruthy();
+        expect(data.value).toEqual('success');
+    });
+
+    it('populates the error object if the retries exceeded', async () => {
+        const { data, error, isError, isLoading } = useQuery<string, Error>(
+            'test',
+            async () => {
+                throw new Error('an error was thrown!');
+            },
+            {
+                timesToRetryOnError: 1,
+                timeToWaitBeforeRetryingOnError: 10,
+            },
+        );
+
+        await startTimeout(0);
+
+        expect(data.value).toBeNull();
+        expect(error.value).toBeNull();
+        expect(isError.value).toBeFalsy();
+        expect(isLoading.value).toBeTruthy();
+
+        await startTimeout(10);
+
+        expect(data.value).toBeNull();
+        expect(isError.value).toBeTruthy();
+        expect(error.value).toBeInstanceOf(Error);
         expect(error.value?.message).toEqual('an error was thrown!');
     });
 });
