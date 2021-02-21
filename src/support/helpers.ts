@@ -8,3 +8,13 @@ export const startTimeout = (time: number) => {
 
     return promise;
 };
+
+export const containsAny = (haystack: any[], needles: any[]): boolean => {
+    for (const needle of needles) {
+        if (haystack.includes(needle)) {
+            return true;
+        }
+    }
+
+    return false;
+};
