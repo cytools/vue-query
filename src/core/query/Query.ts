@@ -15,9 +15,10 @@ class Query<TData, TError = any> {
     constructor({
         data = null,
         error = null,
+        isFetching = false,
         status = QueryStatus.IDLE,
     }: Partial<QueryData<TData, TError>> = {}) {
-        this.queryData = reactive({ value: { data, error, status } }) as { value: QueryData<TData, TError> };
+        this.queryData = reactive({ value: { data, error, status, isFetching } }) as { value: QueryData<TData, TError> };
     }
 
     update(queryData: Partial<QueryData<TData>>): this {
@@ -60,7 +61,11 @@ class Query<TData, TError = any> {
     }
 
     get isSuccess() {
-        return this.queryData.value.status === QueryStatus.SUCCESS;
+        return this.queryData.value.status === QueryStatus.SUCCESS || this.queryData.value.data;
+    }
+
+    get isFetching() {
+        return this.queryData.value.isFetching;
     }
 }
 

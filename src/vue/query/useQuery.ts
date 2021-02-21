@@ -14,24 +14,30 @@ import { startTimeout } from '@/support/helpers';
 
 export type QueryCallback<TData> = (...data: any) => Promise<TData>;
 export type QueryOptions<TData, TError> = {
-    onError: (error: TError) => void;
-    onSuccess: (data: TData | null | undefined) => void;
-    onDataReceive: (data: TData | null | undefined) => void;
+    manual: boolean;
+    keysNotToWait: string[];
     defaultData: TData | null;
+    keepPreviousData: boolean;
     timesToRetryOnError: number;
     keyChangeRefetchWaitTime: number;
+    onError: (error: TError) => void;
     timeToWaitBeforeRetryingOnError: number;
+    onSuccess: (data: TData | null | undefined) => void;
+    onDataReceive: (data: TData | null | undefined) => void;
 };
 
 export default function useQuery<TData, TError = any>(
     key: string | Array<string | Ref>,
     callback: QueryCallback<TData> | null = null,
     {
+        manual = false,
         onError = () => {},
-        onSuccess = () => {},
-        onDataReceive = () => {},
+        keysNotToWait = [],
         defaultData = null,
+        onSuccess = () => {},
+        keepPreviousData = false,
         timesToRetryOnError = 3,
+        onDataReceive = () => {},
         keyChangeRefetchWaitTime = 500,
         timeToWaitBeforeRetryingOnError = 2000,
     }: Partial<QueryOptions<TData, TError>> = {},
@@ -49,20 +55,21 @@ export default function useQuery<TData, TError = any>(
     };
     const { variables } = useQueryKeyWatcher({
         key,
+        keysNotToWait,
         callback: initQuery,
         waitTime: keyChangeRefetchWaitTime,
     });
-    const refetch = async (timesRetried = 0) => {
+    const fetchData = async (timesRetried = 0) => {
         if (!callback) {
             return;
         }
 
-        if (query.value?.isLoading && timesRetried === 0) {
+        if (query.value?.isFetching && timesRetried === 0) {
             return;
         }
 
         query.value?.update({
-            status: QueryStatus.LOADING,
+            isFetching: true,
         });
 
         const callbackResult = callback(...variables);
@@ -100,8 +107,21 @@ export default function useQuery<TData, TError = any>(
 
             await startTimeout(timeToWaitBeforeRetryingOnError);
 
-            refetch(++timesRetried);
+            fetchData(++timesRetried);
+        } finally {
+            query.value?.update({
+                isFetching: false,
+            });
         }
+    };
+    const refetch = async () => {
+        if (query.value?.isSuccess || !keepPreviousData) {
+            query.value?.update({
+                status: QueryStatus.LOADING,
+            });
+        }
+
+        await fetchData();
     };
     initQuery();
 

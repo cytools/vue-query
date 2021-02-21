@@ -12,17 +12,17 @@ import { containsAny } from '@/support/helpers';
 
 export interface QueryKeyWatcherOptions {
     key: string | Array<string | Ref | { [key: string]: Ref }>;
-    callback: Function;
     waitTime: number;
+    callback: Function;
     keysNotToWait: string[];
 }
 
 export default function useQueryKeyWatcher(
     {
         key = '',
-        callback = () => {},
         waitTime = 500,
         keysNotToWait = [],
+        callback = () => {},
     }: Partial<QueryKeyWatcherOptions>,
 ) {
     if (!key) {
