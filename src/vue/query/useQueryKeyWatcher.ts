@@ -77,6 +77,7 @@ export default function useQueryKeyWatcher(
 
             watches.push(watch(indexData.reactiveValue, onWatch(indexData.index)));
         }
+
     };
     initWatchersForReactiveVariables(key);
 

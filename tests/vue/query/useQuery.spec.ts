@@ -112,6 +112,7 @@ describe('useQuery', () => {
         expect(query.isLoading.value).toBeFalsy();
         expect(query.isSuccess.value).toBeFalsy();
         expect(query.isError.value).toBeFalsy();
+        expect(query.isFetching.value).toBeFalsy();
     });
 
     it('returns another query when the key changes', async () => {
@@ -286,5 +287,37 @@ describe('useQuery', () => {
         expect(isError.value).toBeTruthy();
         expect(error.value).toBeInstanceOf(Error);
         expect(error.value?.message).toEqual('an error was thrown!');
+    });
+
+    it('can fetch other data when the key changes without removing the old data', async () => {
+        const page = ref(1);
+        const { data } = useQuery<string, Error>(
+            ['test', page],
+            async (currentPage: number) => {
+                await startTimeout(10);
+
+                return currentPage > 1 ? 'testing here' : 'test';
+            },
+            {
+                keepPreviousData: true,
+                keyChangeRefetchWaitTime: 0,
+            },
+        );
+
+        expect(data.value).toEqual(null);
+
+        await startTimeout(10);
+
+        expect(data.value).toEqual('test');
+
+        page.value = 2;
+
+        await startTimeout(5);
+
+        expect(data.value).toEqual('test');
+
+        await startTimeout(5);
+
+        expect(data.value).toEqual('testing here');
     });
 });

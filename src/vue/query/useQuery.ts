@@ -1,7 +1,7 @@
 /**
  * External dependencies.
  */
-import { computed, reactive, Ref } from 'vue-demi';
+import { ref, computed, reactive, Ref, watch } from 'vue-demi';
 
 /**
  * Internal dependencies.
@@ -42,6 +42,7 @@ export default function useQuery<TData, TError = any>(
         timeToWaitBeforeRetryingOnError = 2000,
     }: Partial<QueryOptions<TData, TError>> = {},
 ) {
+    const data: Ref<TData | null> = ref(null);
     const { queryClient } = useQueryClient<TData, TError>();
     const query = reactive({ value: {} }) as { value: Query<TData, TError> };
     const initQuery = () => {
@@ -115,7 +116,7 @@ export default function useQuery<TData, TError = any>(
         }
     };
     const refetch = async () => {
-        if (query.value?.isSuccess || !keepPreviousData) {
+        if (!data.value || !keepPreviousData) {
             query.value?.update({
                 status: QueryStatus.LOADING,
             });
@@ -125,16 +126,28 @@ export default function useQuery<TData, TError = any>(
     };
     initQuery();
 
+    watch(query, (newQuery, oldQuery) => {
+            if (!newQuery?.value?.isSuccess) {
+                return;
+            }
+
+            data.value = newQuery?.value?.data;
+        },
+        {
+            immediate: true,
+        });
+
     return {
         refetch: () => refetch(),
         updateQueryData: (updateQueryDataCB: (data: TData | null) => TData) => query.value?.updateData(updateQueryDataCB),
 
-        data: computed(() => query.value?.data),
+        data: computed(() => data.value),
         status: computed(() => query.value?.status),
         error: computed(() => query.value?.error),
         isIdle: computed(() => query.value?.isIdle),
         isError: computed(() => query.value?.isError),
         isLoading: computed(() => query.value?.isLoading),
         isSuccess: computed(() => query.value?.isSuccess),
+        isFetching: computed(() => query.value?.isFetching),
     };
 }
