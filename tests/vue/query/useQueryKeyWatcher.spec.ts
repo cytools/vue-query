@@ -91,6 +91,29 @@ describe('useQueryKeyWatcher', () => {
         expect(mockFn).toHaveBeenCalled();
     });
 
+    it('can have reactive object with reactive values inside array key', async () => {
+        const someKey = ref('something');
+        const mockFn = jest.fn();
+        const { variables } = useQueryKeyWatcher({
+            key: ['testing', { someKey }],
+            callback: mockFn,
+            waitTime: 10,
+        });
+
+        expect(mockFn).not.toHaveBeenCalled();
+
+        someKey.value = 'changed';
+
+        await startTimeout(0);
+
+        expect(mockFn).not.toHaveBeenCalled();
+
+        await startTimeout(10);
+
+        expect(mockFn).toHaveBeenCalled();
+        expect(variables).toEqual(['changed']);
+    });
+
     it('does nothing if the key is not a ref', async () => {
         const mockFn = jest.fn();
         const { variables } = useQueryKeyWatcher({

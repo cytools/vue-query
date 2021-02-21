@@ -11,7 +11,7 @@ import useCurrentInstance from '@/vue/useCurrentInstance';
 import { containsAny } from '@/support/helpers';
 
 export interface QueryKeyWatcherOptions {
-    key: string | Array<string | Ref>;
+    key: string | Array<string | Ref | { [key: string]: Ref }>;
     callback: Function;
     waitTime: number;
     keysNotToWait: string[];
