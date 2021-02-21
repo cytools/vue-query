@@ -125,4 +125,24 @@ describe('useQueryKeyWatcher', () => {
         expect(variables).toEqual([]);
         expect(mockFn).not.toHaveBeenCalled();
     });
+
+    it('doesnt wait for keys that are specified unwaitable', async () => {
+        const someKey = ref('something');
+        const mockFn = jest.fn();
+        const { variables } = useQueryKeyWatcher({
+            key: ['testing', { someKey }],
+            callback: mockFn,
+            waitTime: 10,
+            keysNotToWait: ['someKey'],
+        });
+
+        expect(mockFn).not.toHaveBeenCalled();
+
+        someKey.value = 'changed';
+
+        await startTimeout(0);
+
+        expect(mockFn).toHaveBeenCalled();
+        expect(variables).toEqual(['changed']);
+    });
 });
