@@ -328,7 +328,7 @@ describe('useQuery', () => {
             async () => {
                 await startTimeout(10);
 
-                return '';
+                return 'test';
             },
             {
                 keepPreviousData: true,

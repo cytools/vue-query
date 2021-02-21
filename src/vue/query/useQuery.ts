@@ -1,7 +1,7 @@
 /**
  * External dependencies.
  */
-import { isNil } from 'lodash';
+import { isEmpty } from 'lodash';
 import { ref, computed, reactive, Ref, watch } from 'vue-demi';
 
 /**
@@ -117,7 +117,7 @@ export default function useQuery<TData, TError = any>(
         }
     };
     const refetch = async () => {
-        if (!keepPreviousData || isNil(data.value)) {
+        if (!keepPreviousData || isEmpty(data.value)) {
             query.value?.update({
                 status: QueryStatus.LOADING,
             });
