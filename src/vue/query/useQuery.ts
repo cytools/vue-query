@@ -1,6 +1,7 @@
 /**
  * External dependencies.
  */
+import { isNil } from 'lodash';
 import { ref, computed, reactive, Ref, watch } from 'vue-demi';
 
 /**
@@ -116,7 +117,7 @@ export default function useQuery<TData, TError = any>(
         }
     };
     const refetch = async () => {
-        if (!data.value || !keepPreviousData) {
+        if (!keepPreviousData || isNil(data.value)) {
             query.value?.update({
                 status: QueryStatus.LOADING,
             });
@@ -126,7 +127,7 @@ export default function useQuery<TData, TError = any>(
     };
     initQuery();
 
-    watch(query, (newQuery, oldQuery) => {
+    watch(query, newQuery => {
             if (!newQuery?.value?.isSuccess) {
                 return;
             }

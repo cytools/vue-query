@@ -320,4 +320,40 @@ describe('useQuery', () => {
 
         expect(data.value).toEqual('testing here');
     });
+
+    it('it doesnt turn on loading after the first query when use keepPreviousData', async () => {
+        const page = ref(1);
+        const { isLoading, isFetching } = useQuery<string, Error>(
+            ['test', page],
+            async () => {
+                await startTimeout(10);
+
+                return '';
+            },
+            {
+                keepPreviousData: true,
+                keyChangeRefetchWaitTime: 0,
+            },
+        );
+
+        expect(isLoading.value).toBeTruthy();
+        expect(isFetching.value).toBeTruthy();
+
+        await startTimeout(10);
+
+        expect(isLoading.value).toBeFalsy();
+        expect(isFetching.value).toBeFalsy();
+
+        page.value = 2;
+
+        await startTimeout(5);
+
+        expect(isLoading.value).toBeFalsy();
+        expect(isFetching.value).toBeTruthy();
+
+        await startTimeout(5);
+
+        expect(isLoading.value).toBeFalsy();
+        expect(isFetching.value).toBeFalsy();
+    });
 });
