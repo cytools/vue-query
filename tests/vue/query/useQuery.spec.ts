@@ -356,4 +356,25 @@ describe('useQuery', () => {
         expect(isLoading.value).toBeFalsy();
         expect(isFetching.value).toBeFalsy();
     });
+
+    it('can be manual', async () => {
+        const jestMockFn = jest.fn();
+        const callback = async () => jestMockFn();
+        const { refetch, status, isLoading } = useQuery(
+            'some-query',
+            callback,
+            {
+                manual: true,
+            },
+        );
+
+        expect(isLoading.value).toBeFalsy();
+        expect(jestMockFn).not.toHaveBeenCalled();
+        expect(status.value).toEqual(QueryStatus.IDLE);
+
+        await refetch();
+
+        expect(jestMockFn).toHaveBeenCalled();
+        expect(status.value).toEqual(QueryStatus.SUCCESS);
+    });
 });

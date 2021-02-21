@@ -49,7 +49,7 @@ export default function useQuery<TData, TError = any>(
     const initQuery = () => {
         query.value = queryClient.addQuery(key, { data: defaultData }) as any;
 
-        if (query.value?.isIdle && callback) {
+        if (!manual && query.value?.isIdle && callback) {
             void refetch();
         } else {
             onDataReceive(query.value?.data);
