@@ -10,13 +10,13 @@ import { ref, Ref, watch, computed } from 'vue-demi';
 import useQuery, { QueryCallback, QueryOptions } from '@/vue/query/useQuery';
 import useQueryKeyWatcher from '@/vue/query/useQueryKeyWatcher';
 
-export default function usePaginateQuery<TData, TError>(
+export default function usePaginateQuery<TData, TError = any>(
     key: string | Array<string | Ref | { [key: string]: Ref }>,
     callback: QueryCallback<{ data: TData, hasNextPage: boolean }> | null = null,
     options: Partial<QueryOptions<{ data: TData, hasNextPage: boolean }, TError>> = {},
 ) {
     const currentPage = ref(1);
-    const queryCachedData = ref(options.defaultData);
+    const queryCachedData = ref(options.defaultData || null);
     const requestHasNextPage: Ref<{ [key: number]: boolean }> = ref({
         1: false,
     });
@@ -60,14 +60,14 @@ export default function usePaginateQuery<TData, TError>(
     const hasMorePages = computed(() => requestHasNextPage.value[currentPage.value]);
     void triggerQuery();
 
-    watch(query.data, ({ data = null, hasMorePages: morePages = true }: any) => {
+    watch(query.data, ({ data = null, hasNextPage = true }: any) => {
         if (data) {
             queryCachedData.value = cloneDeep(data);
         }
 
         requestHasNextPage.value = {
             ...requestHasNextPage.value,
-            [currentPage.value]: morePages,
+            [currentPage.value]: hasNextPage,
         };
     });
 
