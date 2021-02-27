@@ -377,4 +377,50 @@ describe('useQuery', () => {
         expect(jestMockFn).toHaveBeenCalled();
         expect(status.value).toEqual(QueryStatus.SUCCESS);
     });
+
+    it('tries to fetch from cache and then fetches data', async () => {
+        const jestMockFn = jest.fn();
+        const callback = async () => jestMockFn();
+        const { fetchFromCacheOrRefetch, status, isLoading } = useQuery(
+            'some-query',
+            callback,
+            {
+                manual: true,
+            },
+        );
+
+        expect(isLoading.value).toBeFalsy();
+        expect(jestMockFn).not.toHaveBeenCalled();
+        expect(status.value).toEqual(QueryStatus.IDLE);
+
+        await fetchFromCacheOrRefetch();
+
+        expect(jestMockFn).toHaveBeenCalled();
+        expect(status.value).toEqual(QueryStatus.SUCCESS);
+    });
+
+    it('returns data from cache and never fetches', async () => {
+        const { queryClient } = useQueryClient();
+
+        queryClient.addQuery('some-query', {
+            data: 'some-data',
+            status: QueryStatus.SUCCESS,
+        });
+
+        const jestMockFn = jest.fn();
+        const callback = async () => jestMockFn();
+        const { fetchFromCacheOrRefetch, status } = useQuery(
+            'some-query',
+            callback,
+            {
+                manual: true,
+            },
+        );
+
+        const data = await fetchFromCacheOrRefetch();
+
+        expect(data).toEqual('some-data');
+        expect(jestMockFn).not.toHaveBeenCalled();
+        expect(status.value).toEqual(QueryStatus.SUCCESS);
+    });
 });

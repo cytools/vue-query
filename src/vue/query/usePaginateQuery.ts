@@ -11,7 +11,7 @@ import useQuery, { QueryCallback, QueryOptions } from '@/vue/query/useQuery';
 import useQueryKeyWatcher from '@/vue/query/useQueryKeyWatcher';
 
 export default function usePaginateQuery<TData, TError>(
-    key: string | Array<string | Ref>,
+    key: string | Array<string | Ref | { [key: string]: Ref }>,
     callback: QueryCallback<TData> | null = null,
     options: Partial<QueryOptions<TData, TError>> = {},
 ) {
@@ -46,7 +46,7 @@ export default function usePaginateQuery<TData, TError>(
     const { variables } = useQueryKeyWatcher({
         key,
         callback: reset,
-        doNotWatchForKeys: ['page'],
+        keysNotToWait: ['page'],
     });
 
     const query = useQuery(

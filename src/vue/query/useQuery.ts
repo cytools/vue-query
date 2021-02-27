@@ -28,7 +28,7 @@ export type QueryOptions<TData, TError> = {
 };
 
 export default function useQuery<TData, TError = any>(
-    key: string | Array<string | Ref>,
+    key: string | Array<string | Ref | { [key: string]: Ref }>,
     callback: QueryCallback<TData> | null = null,
     {
         manual = false,
@@ -46,22 +46,27 @@ export default function useQuery<TData, TError = any>(
     const data: Ref<TData | null> = ref(null);
     const { queryClient } = useQueryClient<TData, TError>();
     const query = reactive({ value: {} }) as { value: Query<TData, TError> };
-    const initQuery = () => {
+    const fetchFromCacheOrRefetch = async (callbackVariables: any[] = [], canRefetch = true) => {
         query.value = queryClient.addQuery(key, { data: defaultData }) as any;
 
-        if (!manual && query.value?.isIdle && callback) {
-            void refetch();
+        if ((query.value?.isIdle || !query.value?.data) && callback) {
+            if (canRefetch) {
+                void refetch(callbackVariables);
+            }
         } else {
             onDataReceive(query.value?.data);
         }
+
+        return query.value.data;
     };
+    const initQuery = () => fetchFromCacheOrRefetch(variables, !manual);
     const { variables } = useQueryKeyWatcher({
         key,
         keysNotToWait,
         callback: initQuery,
         waitTime: keyChangeRefetchWaitTime,
     });
-    const fetchData = async (timesRetried = 0) => {
+    const fetchData = async (callbackVariables: any[] = [], timesRetried = 0) => {
         if (!callback) {
             return;
         }
@@ -70,11 +75,13 @@ export default function useQuery<TData, TError = any>(
             return;
         }
 
+        callbackVariables = callbackVariables.length ? callbackVariables : variables;
+
         query.value?.update({
             isFetching: true,
         });
 
-        const callbackResult = callback(...variables);
+        const callbackResult = callback(...callbackVariables);
 
         // @ts-ignore
         if (!(callbackResult instanceof Promise)) {
@@ -109,21 +116,21 @@ export default function useQuery<TData, TError = any>(
 
             await startTimeout(timeToWaitBeforeRetryingOnError);
 
-            fetchData(++timesRetried);
+            fetchData(callbackVariables, ++timesRetried);
         } finally {
             query.value?.update({
                 isFetching: false,
             });
         }
     };
-    const refetch = async () => {
+    const refetch = async (callbackVariables: any[] = []) => {
         if (!keepPreviousData || isEmpty(data.value)) {
             query.value?.update({
                 status: QueryStatus.LOADING,
             });
         }
 
-        await fetchData();
+        await fetchData(callbackVariables);
     };
     initQuery();
 
@@ -139,7 +146,8 @@ export default function useQuery<TData, TError = any>(
         });
 
     return {
-        refetch: () => refetch(),
+        refetch,
+        fetchFromCacheOrRefetch,
         updateQueryData: (updateQueryDataCB: (data: TData | null) => TData) => query.value?.updateData(updateQueryDataCB),
 
         data: computed(() => data.value),
