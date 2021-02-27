@@ -2,7 +2,7 @@
  * External dependencies.
  */
 import { cloneDeep } from 'lodash';
-import { computed, Ref, ref } from 'vue-demi';
+import { ref, Ref, watch, computed } from 'vue-demi';
 
 /**
  * Internal dependencies.
@@ -12,15 +12,15 @@ import useQueryKeyWatcher from '@/vue/query/useQueryKeyWatcher';
 
 export default function usePaginateQuery<TData, TError>(
     key: string | Array<string | Ref | { [key: string]: Ref }>,
-    callback: QueryCallback<TData> | null = null,
-    options: Partial<QueryOptions<TData, TError>> = {},
+    callback: QueryCallback<{ data: TData, hasNextPage: boolean }> | null = null,
+    options: Partial<QueryOptions<{ data: TData, hasNextPage: boolean }, TError>> = {},
 ) {
     const currentPage = ref(1);
     const queryCachedData = ref(options.defaultData);
-    const requestHasNextPage = ref({
+    const requestHasNextPage: Ref<{ [key: number]: boolean }> = ref({
         1: false,
     });
-    const triggerQuery = () => query.refetch([currentPage.value, ...variables]);
+    const triggerQuery = () => query.fetchFromCacheOrRefetch([currentPage.value, ...variables]);
     const fetchPrevPage = () => {
         if (query.isFetching.value || currentPage.value <= 1) {
             return;
@@ -54,21 +54,22 @@ export default function usePaginateQuery<TData, TError>(
         callback,
         {
             ...options,
-            onDataReceive: response => {
-                const { data: responseData, hasNextPage } = response;
-                requestHasNextPage.value = {
-                    ...requestHasNextPage.value,
-                    [currentPage.value]: hasNextPage,
-                };
-
-                queryCachedData.value = cloneDeep(responseData);
-
-                options.onDataReceive && options.onDataReceive(responseData);
-            },
+            manual: true,
         },
     );
     const hasMorePages = computed(() => requestHasNextPage.value[currentPage.value]);
-    query.refetch();
+    void triggerQuery();
+
+    watch(query.data, ({ data = null, hasMorePages: morePages = true }: any) => {
+        if (data) {
+            queryCachedData.value = cloneDeep(data);
+        }
+
+        requestHasNextPage.value = {
+            ...requestHasNextPage.value,
+            [currentPage.value]: morePages,
+        };
+    });
 
     return {
         ...query,
