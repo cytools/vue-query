@@ -68,7 +68,7 @@ describe('useQueryKeyWatcher', () => {
 
         expect(variables).toEqual(['something']);
 
-        await startTimeout(5);
+        await startTimeout(10);
 
         expect(variables).toEqual(['test']);
     });

@@ -316,7 +316,7 @@ describe('useQuery', () => {
 
         expect(data.value).toEqual('test');
 
-        await startTimeout(5);
+        await startTimeout(10);
 
         expect(data.value).toEqual('testing here');
     });
