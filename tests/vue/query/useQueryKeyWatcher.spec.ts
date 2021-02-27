@@ -145,4 +145,23 @@ describe('useQueryKeyWatcher', () => {
         expect(mockFn).toHaveBeenCalled();
         expect(variables).toEqual(['changed']);
     });
+
+    it('doesnt watch for keys that are specified', async () => {
+        const someKey = ref('something');
+        const mockFn = jest.fn();
+        const { variables } = useQueryKeyWatcher({
+            key: ['testing', { someKey }],
+            callback: mockFn,
+            waitTime: 0,
+            keysNotToWatch: ['someKey'],
+        });
+
+        expect(variables).toEqual([]);
+        expect(mockFn).not.toHaveBeenCalled();
+
+        someKey.value = 'changed';
+
+        expect(mockFn).not.toHaveBeenCalled();
+        expect(variables).toEqual([]);
+    });
 });

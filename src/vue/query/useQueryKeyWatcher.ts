@@ -7,14 +7,15 @@ import { isRef, watch, onUnmounted, Ref } from 'vue-demi';
 /**
  * Internal dependencies.
  */
-import useCurrentInstance from '@/vue/useCurrentInstance';
 import { containsAny } from '@/support/helpers';
+import useCurrentInstance from '@/vue/useCurrentInstance';
 
 export interface QueryKeyWatcherOptions {
     key: string | Array<string | Ref | { [key: string]: Ref }>;
     waitTime: number;
     callback: Function;
     keysNotToWait: string[];
+    keysNotToWatch: string[];
 }
 
 export default function useQueryKeyWatcher(
@@ -22,6 +23,7 @@ export default function useQueryKeyWatcher(
         key = '',
         waitTime = 500,
         keysNotToWait = [],
+        keysNotToWatch = [],
         callback = () => {},
     }: Partial<QueryKeyWatcherOptions>,
 ) {
@@ -54,6 +56,10 @@ export default function useQueryKeyWatcher(
                 });
             } else if (isObject(inKey)) {
                 for (const [objectKey, data] of Object.entries(inKey)) {
+                    if (keysNotToWatch.includes(objectKey)) {
+                        continue;
+                    }
+
                     if (!isRef(data)) {
                         initWatchersForReactiveVariables(data);
 

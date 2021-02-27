@@ -46,7 +46,7 @@ export default function usePaginateQuery<TData, TError>(
     const { variables } = useQueryKeyWatcher({
         key,
         callback: reset,
-        keysNotToWait: ['page'],
+        keysNotToWatch: ['page'],
     });
 
     const query = useQuery(
