@@ -55,6 +55,7 @@ export default function usePaginateQuery<TData, TError = any>(
         {
             ...options,
             manual: true,
+            keepPreviousData: true,
         },
     );
     const hasMorePages = computed(() => requestHasNextPage.value[currentPage.value]);
