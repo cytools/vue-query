@@ -43,6 +43,10 @@ class InMemoryCache<TData> extends Cache<TData> {
         return this;
     }
 
+    public getCacheKeys(): string[] {
+        return Object.keys(this.cache.value);
+    }
+
     protected updateCache(key: string, data: TData | null): void {
         this.cache.value = {
             ...this.cache.value,

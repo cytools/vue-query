@@ -1,7 +1,6 @@
 /**
  * External dependencies.
  */
-
 import { computed, ref, Ref } from 'vue-demi';
 
 /**

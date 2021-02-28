@@ -13,6 +13,8 @@ abstract class Cache<TData> {
     public abstract count(): number;
 
     public abstract clear(): this;
+
+    public abstract getCacheKeys(): string[];
 }
 
 export type CacheData<TData> = {

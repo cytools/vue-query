@@ -80,4 +80,38 @@ describe('Query Client', () => {
 
         query.value?.updateData(() => 'testing');
     });
+
+    it('updates multiple queries that have the key we provided', () => {
+        const query = queryClient.addQuery(['test', { page: { value: 1 } }, { test: { value: 3 } }], {
+            data: 'test',
+        });
+        const query2 = queryClient.addQuery(['test', { testing: 3 }], {
+            data: 'resting',
+        });
+
+        expect(query.value?.data).toEqual('test');
+        expect(query2.value?.data).toEqual('resting');
+
+        queryClient.updateQueryDataForQueriesWithStartingKey('test', () => 'hello');
+
+        expect(query.value?.data).toEqual('hello');
+        expect(query2.value?.data).toEqual('hello');
+    });
+
+    it('updates multiple queries even if the key we provide is all over the place', () => {
+        const query = queryClient.addQuery([{ page: { value: 1 } }, { festival: { test: 12 } }], {
+            data: 'test',
+        });
+        const query2 = queryClient.addQuery(['festival', { testing: 3 }], {
+            data: 'resting',
+        });
+
+        expect(query.value?.data).toEqual('test');
+        expect(query2.value?.data).toEqual('resting');
+
+        queryClient.updateQueryDataForQueriesWithStartingKey('festival', () => 'hello');
+
+        expect(query.value?.data).toEqual('hello');
+        expect(query2.value?.data).toEqual('hello');
+    });
 });
