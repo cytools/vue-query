@@ -51,7 +51,7 @@ export default function useQuery<TData, TError = any>(
 
         if ((query.value?.isIdle || !query.value?.data) && callback) {
             if (canRefetch) {
-                void refetch(callbackVariables);
+                await refetch(callbackVariables);
             }
         } else {
             onDataReceive(query.value?.data);

@@ -21,25 +21,25 @@ export default function usePaginateQuery<TData, TError = any>(
         1: false,
     });
     const triggerQuery = () => query.fetchFromCacheOrRefetch([currentPage.value, ...variables]);
-    const fetchPrevPage = () => {
+    const fetchPrevPage = async () => {
         if (query.isFetching.value || currentPage.value <= 1) {
             return;
         }
 
         currentPage.value = currentPage.value - 1;
-        triggerQuery();
+        await triggerQuery();
     };
-    const fetchNextPage = () => {
+    const fetchNextPage = async () => {
         if (query.isFetching.value || !requestHasNextPage.value[currentPage.value]) {
             return;
         }
 
         currentPage.value = currentPage.value + 1;
-        triggerQuery();
+        await triggerQuery();
     };
-    const reset = () => {
+    const reset = async () => {
         currentPage.value = 1;
-        triggerQuery();
+        await triggerQuery();
     };
 
     key = Array.isArray(key) ? [...key.slice(0, 1), { page: currentPage }, ...key.slice(1)] : [key, currentPage];

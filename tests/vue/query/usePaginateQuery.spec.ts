@@ -39,9 +39,7 @@ const basePaginationTest = async () => {
     expect(isNextButtonActive.value).toBeTruthy();
     expect(canShowPaginationButtons.value).toBeTruthy();
 
-    fetchNextPage();
-
-    await startTimeout(1);
+    await fetchNextPage();
 
     expect(data.value).toEqual('page-2-data');
     expect(hasMorePages.value).toBeFalsy();
@@ -105,9 +103,7 @@ describe('useQuery', () => {
             canShowPaginationButtons,
         } = await basePaginationTest();
 
-        fetchPrevPage();
-
-        await startTimeout(0);
+        await fetchPrevPage();
 
         expect(data.value).toEqual('page-1-data');
         expect(hasMorePages.value).toBeTruthy();
