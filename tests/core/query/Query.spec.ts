@@ -1,7 +1,7 @@
 /**
  * Internal dependencies.
  */
-import Query from '@/core/query/Query';
+import Query, { queryDataClone, changeQueryDataCloneMethod } from '@/core/query/Query';
 import { QueryStatus } from '@/enums/QueryStatus';
 
 describe('Query', () => {
@@ -33,5 +33,18 @@ describe('Query', () => {
         query.updateData((data) => [...(data || []), 'hey']);
 
         expect(query.data).toEqual(['test', 'hey']);
+    });
+
+    it('can change the query data clone function', () => {
+        const newCloneFunction = jest.fn();
+        changeQueryDataCloneMethod((data) => {
+            newCloneFunction();
+
+            return data;
+        });
+
+        new Query<string[]>({ data: ['test'] });
+
+        expect(newCloneFunction).toHaveBeenCalled();
     });
 });
