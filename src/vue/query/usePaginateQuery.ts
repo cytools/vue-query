@@ -81,6 +81,7 @@ export default function usePaginateQuery<TData, TError = any>(
         currentPage: computed(() => currentPage.value),
         isNextButtonActive: computed(() => hasMorePages.value),
         isPrevButtonActive: computed(() => currentPage.value > 1),
+        isSuccess: computed(() => query.isSuccess || queryCachedData.value),
 
         // show pagination buttons if the page 1 has more pages
         canShowPaginationButtons: computed(() => requestHasNextPage.value[1]),
