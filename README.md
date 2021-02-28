@@ -139,3 +139,69 @@ const {
 - `isPrevButtonActive`: Returns true if we can go back a page.
 
 - `isNextButtonActive`: Returns true if we can go to the next page.
+
+### How to mutate
+
+This one is a very simple step, if you want to update the name of Luke Skywalker from the query cache, you can do that with a mutation.
+
+```js
+import { useQuery, useQueryClient, useMutation } from '@cytools/vue-query';
+
+const { data, isLoading } = useQuery(
+    'luke-man',
+    async () => {
+        const response = await fetch('https://swapi.dev/api/people/1');
+        const data = await response.json();
+
+        return data;
+    }
+);
+
+console.log(data.value.name); // Should Print "Luke Skywalker"
+
+// here we are going to change the name of Luke Skywalker
+const { queryClient } = useQueryClient();
+useMutation(
+    () => { name: 'Anakin Skywalker' },
+    {
+        onSuccess: (response) => {
+            // the update data accepts a callback
+            // that passes the data we have in the cache
+            queryClient.getQuery('luke-man')
+                .updateData(data => ({ ...data, name: response.name }));
+        }
+    }
+);
+```
+
+This can also be achieved without the query client
+
+```js
+import { useQuery, useMutation } from '@cytools/vue-query';
+
+const { data, isLoading, updateQueryData } = useQuery(
+    'luke-man',
+    async () => {
+        const response = await fetch('https://swapi.dev/api/people/1');
+        const data = await response.json();
+
+        return data;
+    }
+);
+
+console.log(data.value.name); // Should Print "Luke Skywalker"
+
+// here we are going to change the name of Luke Skywalker
+const { queryClient } = useQueryClient();
+useMutation(
+    () => { name: 'Anakin Skywalker' },
+    {
+        onSuccess: (response) => {
+            // Here we pass directly function returned fron useQuery
+            // take note that if you have a changeable key, this would update
+            // the query cache of the latest key
+            updateQueryData(data => ({ ...data, name: response.name }));
+        }
+    }
+);
+```
