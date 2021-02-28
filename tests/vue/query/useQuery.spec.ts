@@ -321,7 +321,7 @@ describe('useQuery', () => {
         expect(data.value).toEqual('testing here');
     });
 
-    it('it doesnt turn on loading after the first query when use keepPreviousData', async () => {
+    it('doesnt turn on loading after the first query when use keepPreviousData', async () => {
         const page = ref(1);
         const { isLoading, isFetching } = useQuery<string, Error>(
             ['test', page],

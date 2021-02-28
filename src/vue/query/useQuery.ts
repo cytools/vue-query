@@ -1,8 +1,7 @@
 /**
  * External dependencies.
  */
-import { isEmpty } from 'lodash';
-import { ref, computed, reactive, Ref, watch } from 'vue-demi';
+import { computed, reactive, ref, Ref, watch } from 'vue-demi';
 
 /**
  * Internal dependencies.
@@ -43,6 +42,7 @@ export default function useQuery<TData, TError = any>(
         timeToWaitBeforeRetryingOnError = 2000,
     }: Partial<QueryOptions<TData, TError>> = {},
 ) {
+    let initialized = false;
     const data: Ref<TData | null> = ref(null);
     const { queryClient } = useQueryClient<TData, TError>();
     const query = reactive({ value: {} }) as { value: Query<TData, TError> };
@@ -55,6 +55,8 @@ export default function useQuery<TData, TError = any>(
             }
         } else {
             onDataReceive(query.value?.data);
+
+            initialized = true;
         }
 
         return query.value.data;
@@ -124,13 +126,17 @@ export default function useQuery<TData, TError = any>(
         }
     };
     const refetch = async (callbackVariables: any[] = []) => {
-        if (!keepPreviousData || isEmpty(data.value)) {
+        if (!keepPreviousData || !initialized) {
             query.value?.update({
                 status: QueryStatus.LOADING,
             });
         }
 
-        await fetchData(callbackVariables);
+        const newData = await fetchData(callbackVariables);
+
+        initialized = true;
+
+        return newData;
     };
     initQuery();
 
