@@ -1,7 +1,7 @@
 /**
  * Internal dependencies.
  */
-import Query, { queryDataClone, changeQueryDataCloneMethod } from '@/core/query/Query';
+import Query, { changeQueryDataCloneMethod } from '@/core/query/Query';
 import { QueryStatus } from '@/enums/QueryStatus';
 
 describe('Query', () => {
