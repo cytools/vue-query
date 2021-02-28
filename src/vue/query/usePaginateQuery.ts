@@ -42,7 +42,7 @@ export default function usePaginateQuery<TData, TError = any>(
         await triggerQuery();
     };
 
-    key = Array.isArray(key) ? [...key.slice(0, 1), { page: currentPage }, ...key.slice(1)] : [key, currentPage];
+    key = Array.isArray(key) ? [...key.slice(0, 1), { page: currentPage }, ...key.slice(1)] : [key, { page: currentPage }];
     const { variables } = useQueryKeyWatcher({
         key,
         callback: reset,
