@@ -2,12 +2,16 @@
  * External dependencies.
  */
 import { reactive } from 'vue-demi';
+import { cloneDeep } from 'lodash';
 
 /**
  * Internal dependencies.
  */
 import { QueryStatus } from '@/enums/QueryStatus';
 import { QueryData } from '@/interfaces/QueryData';
+
+export let queryDataClone = cloneDeep;
+export const changeQueryDataCloneMethod = (newCloneFunction: (data: any) => any) => queryDataClone = newCloneFunction;
 
 class Query<TData, TError = any> {
     protected queryData: { value: QueryData<TData, TError> };
@@ -18,13 +22,21 @@ class Query<TData, TError = any> {
         isFetching = false,
         status = QueryStatus.IDLE,
     }: Partial<QueryData<TData, TError>> = {}) {
-        this.queryData = reactive({ value: { data, error, status, isFetching } }) as { value: QueryData<TData, TError> };
+        this.queryData = reactive({
+            value: {
+                data: queryDataClone(data),
+                error,
+                status,
+                isFetching,
+            },
+        }) as { value: QueryData<TData, TError> };
     }
 
     update(queryData: Partial<QueryData<TData>>): this {
         this.queryData.value = {
             ...this.queryData.value,
             ...queryData,
+            data: queryDataClone(queryData.data || this.queryData.value.data),
         } as QueryData<TData, TError>;
 
         return this;

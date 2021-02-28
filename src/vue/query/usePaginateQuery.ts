@@ -1,7 +1,6 @@
 /**
  * External dependencies.
  */
-import { cloneDeep } from 'lodash';
 import { ref, Ref, watch, computed } from 'vue-demi';
 
 /**
@@ -9,6 +8,7 @@ import { ref, Ref, watch, computed } from 'vue-demi';
  */
 import useQuery, { QueryCallback, QueryOptions } from '@/vue/query/useQuery';
 import useQueryKeyWatcher from '@/vue/query/useQueryKeyWatcher';
+import { queryDataClone } from '@/core/query/Query';
 
 export default function usePaginateQuery<TData, TError = any>(
     key: string | Array<string | Ref | { [key: string]: Ref }>,
@@ -62,7 +62,7 @@ export default function usePaginateQuery<TData, TError = any>(
 
     watch(query.data, ({ data = null, hasNextPage = true }: any) => {
         if (data) {
-            queryCachedData.value = cloneDeep(data);
+            queryCachedData.value = queryDataClone(data);
         }
 
         requestHasNextPage.value = {
