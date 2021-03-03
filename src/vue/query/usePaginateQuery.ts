@@ -59,18 +59,23 @@ export default function usePaginateQuery<TData, TError = any>(
         },
     );
     const hasMorePages = computed(() => requestHasNextPage.value[currentPage.value]);
-    void triggerQuery();
-
-    watch(query.data, ({ data = null, hasNextPage = true }: any) => {
+    const init = ({ data = null, hasNextPage = true }: any = {}) => {
         if (data) {
             queryCachedData.value = queryDataClone(data);
         }
 
         requestHasNextPage.value = {
             ...requestHasNextPage.value,
-            [currentPage.value]: hasNextPage,
+            [currentPage.value]: query.isSuccess.value && hasNextPage,
         };
-    });
+    };
+
+    void triggerQuery();
+
+    // there is some kind of a bug when we us the immediate watcher with the query.data
+    // so we initialize the data ourselfs
+    init(query.data.value || {});
+    watch(query.data, init);
 
     return {
         ...query,
