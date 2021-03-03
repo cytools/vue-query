@@ -77,11 +77,15 @@ export default function useQuery<TData, TError = any>(
             return;
         }
 
-        const currentQuery = query;
+        // assign the current query to a variable
+        // we do this, because if the key is changed between the request
+        // the previous request will update the new query and not the old one
+        // to prevent this we use the current query
+        const currentQuery = query.value;
 
         callbackVariables = callbackVariables.length ? callbackVariables : variables;
 
-        currentQuery.value?.update({
+        currentQuery.update({
             isFetching: true,
         });
 
@@ -90,7 +94,7 @@ export default function useQuery<TData, TError = any>(
         // @ts-ignore
         if (!(callbackResult instanceof Promise)) {
             const error = new Error('The provided callback doesn\'t return a promise!');
-            currentQuery.value?.update({
+            currentQuery.update({
                 error,
                 status: QueryStatus.ERROR,
             });
@@ -100,16 +104,16 @@ export default function useQuery<TData, TError = any>(
         }
 
         try {
-            currentQuery.value?.update({
+            currentQuery.update({
                 data: await callbackResult,
                 status: QueryStatus.SUCCESS,
             });
 
-            onSuccess(currentQuery.value?.data);
-            onDataReceive(currentQuery.value?.data);
+            onSuccess(currentQuery.data);
+            onDataReceive(currentQuery.data);
         } catch (error) {
             if (timesRetried >= timesToRetryOnError) {
-                currentQuery.value?.update({
+                currentQuery.update({
                     error,
                     status: QueryStatus.ERROR,
                 });
@@ -122,7 +126,7 @@ export default function useQuery<TData, TError = any>(
 
             fetchData(callbackVariables, ++timesRetried);
         } finally {
-            currentQuery.value?.update({
+            currentQuery.update({
                 isFetching: false,
             });
         }
