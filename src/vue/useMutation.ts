@@ -8,11 +8,11 @@ import { computed, ref, Ref } from 'vue-demi';
  */
 import { MutationStatus } from '@/enums/MutationStatus';
 
-export type MutationCallback<TData, TVariables> = (variables?: TVariables) => Promise<TData>;
+export type MutationCallback<TData, TVariables> = (...variables: TVariables[]) => Promise<TData>;
 export type MutationOptions<TData, TVariables> = {
-    onMutate: (variables?: TVariables) => Promise<TData | null>;
-    onError: (error: any, variables?: TVariables, context?: any) => void;
-    onSuccess: (result: TData, variables?: TVariables, context?: any) => void;
+    onMutate: (...variables: TVariables[]) => Promise<TData | null>;
+    onError: (error: any, variables: TVariables[], context?: any) => void;
+    onSuccess: (result: TData, variables: TVariables[], context?: any) => void;
 };
 
 /* eslint-disable */
@@ -36,7 +36,7 @@ export default function useMutation<TData = any, TVariables = undefined>(
         isSuccess: computed(() => status.value === MutationStatus.SUCCESS),
         isLoading: computed(() => status.value === MutationStatus.LOADING),
     });
-    const mutate = async (variables?: TVariables) => {
+    const mutate = async (...variables: TVariables[]) => {
         if (status.value === MutationStatus.LOADING) {
             return;
         }
@@ -45,13 +45,13 @@ export default function useMutation<TData = any, TVariables = undefined>(
         status.value = MutationStatus.LOADING;
 
         try {
-            context.value = await onMutate(variables);
+            context.value = await onMutate(...variables);
 
             if (context.value) {
                 data.value = context.value;
             }
 
-            const callbackResult = callback(variables);
+            const callbackResult = callback(...variables);
 
             // @ts-ignore
             if (!(callbackResult instanceof Promise)) {
