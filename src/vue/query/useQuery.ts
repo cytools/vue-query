@@ -77,9 +77,11 @@ export default function useQuery<TData, TError = any>(
             return;
         }
 
+        const currentQuery = query;
+
         callbackVariables = callbackVariables.length ? callbackVariables : variables;
 
-        query.value?.update({
+        currentQuery.value?.update({
             isFetching: true,
         });
 
@@ -88,7 +90,7 @@ export default function useQuery<TData, TError = any>(
         // @ts-ignore
         if (!(callbackResult instanceof Promise)) {
             const error = new Error('The provided callback doesn\'t return a promise!');
-            query.value?.update({
+            currentQuery.value?.update({
                 error,
                 status: QueryStatus.ERROR,
             });
@@ -98,16 +100,16 @@ export default function useQuery<TData, TError = any>(
         }
 
         try {
-            query.value?.update({
+            currentQuery.value?.update({
                 data: await callbackResult,
                 status: QueryStatus.SUCCESS,
             });
 
-            onSuccess(query.value?.data);
-            onDataReceive(query.value?.data);
+            onSuccess(currentQuery.value?.data);
+            onDataReceive(currentQuery.value?.data);
         } catch (error) {
             if (timesRetried >= timesToRetryOnError) {
-                query.value?.update({
+                currentQuery.value?.update({
                     error,
                     status: QueryStatus.ERROR,
                 });
@@ -120,7 +122,7 @@ export default function useQuery<TData, TError = any>(
 
             fetchData(callbackVariables, ++timesRetried);
         } finally {
-            query.value?.update({
+            currentQuery.value?.update({
                 isFetching: false,
             });
         }
