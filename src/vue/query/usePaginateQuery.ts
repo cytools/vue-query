@@ -49,14 +49,14 @@ export default function usePaginateQuery<TData, TError = any>(
         keysNotToWatch: ['page'],
     });
 
-    const query = useQuery(
+    const query = useQuery<TData, TError>(
         key,
-        callback,
+        callback as any,
         {
             ...options,
             manual: true,
             keepPreviousData: true,
-        },
+        } as any,
     );
     const hasMorePages = computed(() => requestHasNextPage.value[currentPage.value]);
     const init = ({ data = null, hasNextPage = true }: any = {}) => {
