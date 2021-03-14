@@ -29,11 +29,11 @@ export default function useInfiniteQuery<TData, TError = any>(
     } = usePaginateQuery(key, callback, options);
 
     watch(data, (newData) => {
-        if (!newData?.data || !Array.isArray(newData?.data)) {
+        if (!Array.isArray(newData)) {
             return;
         }
 
-        queryCachedData.value = [...queryCachedData.value, ...newData.data] as any;
+        queryCachedData.value = [...queryCachedData.value, ...newData] as any;
     }, { immediate: true });
 
     return {
